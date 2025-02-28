@@ -14,10 +14,13 @@
     "@mui/material": "^6.4.6",
     "@react-router/node": "^7.2.0",
     "@react-router/serve": "^7.2.0",
+    "@statsfm/spotify.js": "^1.13.0",
     "isbot": "^5.1.17",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-router": "^7.2.0"
+    "react-router": "^7.2.0",
+    "react-router-dom": "^7.2.0",
+    "spotify-web-api-js": "^1.5.2"
   },
   "devDependencies": {
     "@react-router/dev": "^7.2.0",
