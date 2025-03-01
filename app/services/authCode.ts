@@ -1,5 +1,4 @@
 import { authorizationEndpoint, clientId, redirectUrl, scope, tokenEndpoint } from "keys";
-import { URLSearchParams } from "url";
 
 interface SpotifyTokenResponse {
   access_token: string;
@@ -95,7 +94,7 @@ export async function getToken(code: string): Promise<SpotifyTokenResponse> {
   const codeVerifier = localStorage.getItem("code_verifier");
 
   if (!codeVerifier) {
-    throw new Error("Code  verifier not found in storage");
+    throw new Error("Code verifier not found in storage");
   }
 
   const response = await fetch(tokenEndpoint, {

@@ -58,7 +58,7 @@ const SpotifyLoginPage: React.FC = (): JSX.Element => {
         if (searchParams.has("code")) {
           const success = await handleAuthCallback();
           // TODO: check navigation
-          if (success) navigate("/login", { replace: true });
+          if (success) navigate("./login.tsx", { replace: true });
         }
         if (tokenManager.isLoggedIn()) {
           if (tokenManager.isExpired()) {
@@ -97,7 +97,6 @@ const SpotifyLoginPage: React.FC = (): JSX.Element => {
   if (!userData) {
     return (
       <div className="login-container">
-        <h1>Welcome to the OAuth2 PKCE Example</h1>
         <button id="login-button" onClick={handleLoginClick} className="login-button">
           Log in with Spotify
         </button>
