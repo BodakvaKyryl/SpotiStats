@@ -57,7 +57,6 @@ const SpotifyLoginPage: React.FC = (): JSX.Element => {
         setIsLoading(true);
         if (searchParams.has("code")) {
           const success = await handleAuthCallback();
-          // TODO: check navigation
           if (success) navigate("./login.tsx", { replace: true });
         }
         if (tokenManager.isLoggedIn()) {
