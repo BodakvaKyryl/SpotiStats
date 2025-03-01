@@ -9,6 +9,7 @@ import {
   refreshToken,
   tokenManager,
 } from "~/services/authCode";
+import type { UserProfile } from "~/types";
 
 const SpotifyLoginPage: React.FC = (): JSX.Element => {
   const [userData, setUserData] = useState<UserProfile | null>(null);
@@ -78,6 +79,10 @@ const SpotifyLoginPage: React.FC = (): JSX.Element => {
     };
     initialize();
   }, [searchParams, navigate]);
+
+  useEffect(()=>{
+
+  })
 
   if (isLoading) {
     return <div className="loading">Loading...</div>;
