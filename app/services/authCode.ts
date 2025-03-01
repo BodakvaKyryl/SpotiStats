@@ -1,4 +1,5 @@
 import { authorizationEndpoint, clientId, redirectUrl, scope, tokenEndpoint } from "keys";
+import type { SpotifyUserProfile } from "~/types";
 
 interface SpotifyTokenResponse {
   access_token: string;
