@@ -3,6 +3,7 @@ import { red } from "@mui/material/colors";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
 import type { Route } from "./+types/root";
+import Providers from "./providers/providers";
 import "./app.css";
 
 const theme = createTheme({
@@ -45,7 +46,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <body>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          {children}
+          <Providers>{children}</Providers>
         </ThemeProvider>
         <ScrollRestoration />
         <Scripts />

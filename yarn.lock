@@ -1875,7 +1875,7 @@ axios-better-stacktrace@^2.1.6:
   resolved "https://registry.yarnpkg.com/axios-better-stacktrace/-/axios-better-stacktrace-2.1.7.tgz#b413661f28800bc24b1084f2ca7bf5750027b2b4"
   integrity sha512-m16wNbfb7crBpENBukoBdN1G9NwqSCkuIeKjSEP2iUoFvgNUnSW1/1Ov79EkTu29xmg+TsngJcy2lfwqBzVT7g==
 
-axios@^1.7.2:
+axios@^1.7.2, axios@^1.7.7:
   version "1.8.1"
   resolved "https://registry.yarnpkg.com/axios/-/axios-1.8.1.tgz#7c118d2146e9ebac512b7d1128771cdd738d11e3"
   integrity sha512-NN+fvwH/kV01dYUQ3PTOZns4LWtWhOFCAhQ/pHb88WQ1hNe5V/dvFwc4VJcDL11LT9xSX0QtsR8sWUuyOuOq7g==
