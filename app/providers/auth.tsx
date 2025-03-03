@@ -55,8 +55,10 @@ export function AuthProvider({ children }: PropsWithChildren<AuthProviderProps>)
       setIsLoading(true);
       const token = await refreshToken();
       tokenManager.save(token);
+      console.log("Token refreshed, fetching user data");
 
       const profile = await getUserData();
+      console.log("User profile fetched:", !!profile);
       setUser(profile);
       setIsLoading(false);
     } catch (error) {

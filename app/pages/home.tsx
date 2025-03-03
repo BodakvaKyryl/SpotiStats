@@ -8,7 +8,10 @@ export default function Home() {
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
+      console.log("Home page: Not authenticated, redirecting to login");
       navigate("/login");
+    } else if (!isLoading && !isAuthenticated) {
+      console.log("Home page: User is authenticated", !!user);
     }
   }, [isAuthenticated, isLoading, navigate]);
 

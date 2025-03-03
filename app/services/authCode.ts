@@ -1,5 +1,5 @@
-import { authorizationEndpoint, clientId, redirectUrl, scope, tokenEndpoint } from "keys";
 import type { SpotifyUserProfile } from "~/types";
+import { authorizationEndpoint, clientId, redirectUrl, scope, tokenEndpoint } from "keys";
 
 interface SpotifyTokenResponse {
   access_token: string;
@@ -29,6 +29,9 @@ class TokenManager {
 
   save(response: SpotifyTokenResponse): void {
     const { access_token, refresh_token, expires_in } = response;
+
+    console.log("Saving tokens to localStorage", { access_token: !!access_token, refresh_token: !!refresh_token });
+
     localStorage.setItem("access_token", access_token);
     localStorage.setItem("refresh_token", refresh_token);
     localStorage.setItem("expires_in", expires_in.toString());
@@ -47,7 +50,14 @@ class TokenManager {
   }
 
   isLoggedIn(): boolean {
-    return !!this.accessToken && !!this.expires && new Date() < this.expires;
+    const result = !!this.accessToken && !!this.expires && new Date() < this.expires;
+    console.log("Checking isLoggedIn", {
+      hasAccessToken: !!this.accessToken,
+      hasExpires: !!this.expires,
+      isNotExpired: this.expires ? new Date() < this.expires : false,
+      result,
+    });
+    return result;
   }
 
   isExpired(): boolean {

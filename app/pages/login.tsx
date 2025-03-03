@@ -20,7 +20,10 @@ const SpotifyLoginPage = () => {
           const success = await handleAuthCallback();
           if (success) {
             await refreshUserToken();
-            navigate("/home", { replace: true });
+
+            setTimeout(() => {
+              navigate("/home", { replace: true });
+            }, 500);
           }
         } catch (err) {
           console.error("Authentication callback error", err);
