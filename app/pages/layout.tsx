@@ -1,6 +1,5 @@
 import { Navbar } from "~/components";
 import { type PropsWithChildren } from "react";
-import { Outlet } from "react-router";
 
 const Layout = ({ children }: PropsWithChildren) => {
   return (
@@ -9,7 +8,7 @@ const Layout = ({ children }: PropsWithChildren) => {
         <Navbar />
         <main className="mx-auto mt-16 max-w-7xl px-4 py-8">
           {children}
-          <Outlet />
+          {/* <Outlet /> */}
         </main>
       </div>
     </>

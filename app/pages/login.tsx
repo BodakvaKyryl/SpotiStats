@@ -1,41 +1,11 @@
-import { Alert, Box, Button, CircularProgress, Container, Paper, Typography } from "@mui/material";
+import { Box, Button, Container, Paper, Typography } from "@mui/material";
 import { useAuthContext } from "~/providers";
-import { handleAuthCallback } from "~/services/authCode";
-import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router";
+import { useNavigate } from "react-router";
 
 const SpotifyLoginPage = () => {
-  const [isProcessingCallback, setIsProcessingCallback] = useState<boolean>(false);
-  const [callbackError, setCallbackError] = useState<string | null>(null);
-  const [searchParams] = useSearchParams();
+  const { isAuthenticated, login, user } = useAuthContext();
+
   const navigate = useNavigate();
-
-  const { user, isLoading, error, login, isAuthenticated, refreshUserToken } = useAuthContext();
-
-  useEffect(() => {
-    const processCallback = async () => {
-      if (searchParams.has("code")) {
-        setIsProcessingCallback(true);
-        try {
-          const success = await handleAuthCallback();
-          if (success) {
-            await refreshUserToken();
-
-            setTimeout(() => {
-              navigate("/home", { replace: true });
-            }, 500);
-          }
-        } catch (err) {
-          console.error("Authentication callback error", err);
-          setCallbackError("Failed to complete authentication");
-        } finally {
-          setIsProcessingCallback(false);
-        }
-      }
-    };
-
-    processCallback();
-  }, [searchParams, navigate, refreshUserToken]);
 
   return (
     <Container maxWidth="sm">
@@ -56,18 +26,7 @@ const SpotifyLoginPage = () => {
             flexDirection: "column",
             alignItems: "center",
           }}>
-          {isProcessingCallback || isLoading ? (
-            <CircularProgress />
-          ) : callbackError || error ? (
-            <>
-              <Alert severity="error" sx={{ mb: 2, width: "100%" }}>
-                {callbackError || error}
-              </Alert>
-              <Button variant="contained" onClick={login} color="primary">
-                Try Again
-              </Button>
-            </>
-          ) : isAuthenticated ? (
+          {isAuthenticated ? (
             <>
               <Typography variant="h5" gutterBottom>
                 Welcome back, {user?.display_name}
