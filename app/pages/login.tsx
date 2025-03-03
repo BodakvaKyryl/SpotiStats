@@ -1,195 +1,106 @@
-import type React from "react";
-import { useEffect, useState, type JSX } from "react";
+import { Alert, Box, Button, CircularProgress, Container, Paper, Typography } from "@mui/material";
+import { useAuthContext } from "~/providers";
+import { handleAuthCallback } from "~/services/authCode";
+import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
-import {
-  getUserData,
-  handleAuthCallback,
-  logout,
-  redirectToSpotifyAuthorize,
-  refreshToken,
-  tokenManager,
-} from "~/services/authCode";
-import type { UserProfile } from "~/types";
 
-const SpotifyLoginPage: React.FC = (): JSX.Element => {
-  const [userData, setUserData] = useState<UserProfile | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+const SpotifyLoginPage = () => {
+  const [isProcessingCallback, setIsProcessingCallback] = useState<boolean>(false);
+  const [callbackError, setCallbackError] = useState<string | null>(null);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const formatExpirationDate = (): string => {
-    const expires = tokenManager.expires;
-    if (!expires) return "Not available";
+  const { user, isLoading, error, login, isAuthenticated, refreshUserToken } = useAuthContext();
 
-    return new Date(expires).toLocaleString();
-  };
-
-  const handleLoginClick = async (): Promise<void> => {
-    try {
-      await redirectToSpotifyAuthorize();
-    } catch (error) {
-      setError("Failed to initiate login process");
-      console.error(error);
-    }
-  };
-
-  const handleRefreshTokenClick = async (): Promise<void> => {
-    try {
-      setIsLoading(true);
-      const token = await refreshToken();
-      tokenManager.save(token);
-      setIsLoading(false);
-    } catch (error) {
-      setError("Failed to refresh token");
-      console.error(error);
-    }
-  };
-
-  const handleLogoutClick = (): void => {
-    logout();
-    setUserData(null);
-  };
-
-  // Process auth callback and fetch user data on component mount
-  useEffect((): void => {
-    const initialize = async (): Promise<void> => {
-      try {
-        setIsLoading(true);
-        if (searchParams.has("code")) {
+  useEffect(() => {
+    const processCallback = async () => {
+      if (searchParams.has("code")) {
+        setIsProcessingCallback(true);
+        try {
           const success = await handleAuthCallback();
-          if (success) navigate("./login.tsx", { replace: true });
-        }
-        if (tokenManager.isLoggedIn()) {
-          if (tokenManager.isExpired()) {
-            const token = await refreshToken();
-            tokenManager.save(token);
+          if (success) {
+            await refreshUserToken();
+            navigate("/home", { replace: true });
           }
-
-          const profile = await getUserData();
-          setUserData(profile);
+        } catch (err) {
+          console.error("Authentication callback error", err);
+          setCallbackError("Failed to complete authentication");
+        } finally {
+          setIsProcessingCallback(false);
         }
-
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Initialization error", error);
-        setError("Failed to initialize authentication");
-        setIsLoading(false);
       }
     };
-    initialize();
-  }, [searchParams, navigate]);
 
-  useEffect(()=>{
-
-  })
-
-  if (isLoading) {
-    return <div className="loading">Loading...</div>;
-  }
-
-  if (error) {
-    return (
-      <div className="error">
-        <h1>Authentication Error</h1>
-        <p>{error}</p>
-        <button onClick={handleLoginClick}>Try Again</button>
-      </div>
-    );
-  }
-
-  if (!userData) {
-    return (
-      <div className="login-container">
-        <button id="login-button" onClick={handleLoginClick} className="login-button">
-          Log in with Spotify
-        </button>
-      </div>
-    );
-  }
+    processCallback();
+  }, [searchParams, navigate, refreshUserToken]);
 
   return (
-    <div className="profile-container">
-      <div className="profile-main">
-        <h1>Logged in as {userData.display_name}</h1>
-
-        {userData.images && userData.images.length > 0 && (
-          <img width="150" src={userData.images[0].url} alt={userData.display_name} className="profile-image" />
-        )}
-
-        <table className="profile-table">
-          <tbody>
-            <tr>
-              <td>Display name</td>
-              <td>{userData.display_name}</td>
-            </tr>
-            <tr>
-              <td>Id</td>
-              <td>{userData.id}</td>
-            </tr>
-            <tr>
-              <td>Email</td>
-              <td>{userData.email}</td>
-            </tr>
-            <tr>
-              <td>Spotify URI</td>
-              <td>
-                <a href={userData.external_urls.spotify} target="_blank" rel="noopener noreferrer">
-                  {userData.external_urls.spotify}
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td>Link</td>
-              <td>
-                <a href={userData.href} target="_blank" rel="noopener noreferrer">
-                  {userData.href}
-                </a>
-              </td>
-            </tr>
-            {userData.images && userData.images.length > 0 && (
-              <tr>
-                <td>Profile Image</td>
-                <td>
-                  <a href={userData.images[0].url} target="_blank" rel="noopener noreferrer">
-                    {userData.images[0].url}
-                  </a>
-                </td>
-              </tr>
-            )}
-            <tr>
-              <td>Country</td>
-              <td>{userData.country}</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <div className="button-group">
-          <button onClick={handleRefreshTokenClick}>Refresh Token</button>
-          <button onClick={handleLogoutClick}>Log out</button>
-        </div>
-      </div>
-
-      <div className="oauth-info">
-        <h2>OAuth Info</h2>
-        <table className="oauth-table">
-          <tbody>
-            <tr>
-              <td>Access token</td>
-              <td className="token-cell">{tokenManager.accessToken}</td>
-            </tr>
-            <tr>
-              <td>Refresh token</td>
-              <td className="token-cell">{tokenManager.refreshToken}</td>
-            </tr>
-            <tr>
-              <td>Expiration at</td>
-              <td>{formatExpirationDate()}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <Container maxWidth="sm">
+      <Box
+        sx={{
+          mt: 10,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 3,
+        }}>
+        <Paper
+          elevation={3}
+          sx={{
+            p: 4,
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}>
+          {isProcessingCallback || isLoading ? (
+            <CircularProgress />
+          ) : callbackError || error ? (
+            <>
+              <Alert severity="error" sx={{ mb: 2, width: "100%" }}>
+                {callbackError || error}
+              </Alert>
+              <Button variant="contained" onClick={login} color="primary">
+                Try Again
+              </Button>
+            </>
+          ) : isAuthenticated ? (
+            <>
+              <Typography variant="h5" gutterBottom>
+                Welcome back, {user?.display_name}
+              </Typography>
+              <Typography variant="body1" sx={{ mb: 2 }}>
+                You are now logged in!
+              </Typography>
+              <Button variant="contained" onClick={() => navigate("/home")} sx={{ mt: 2 }}>
+                Go to Home
+              </Button>
+            </>
+          ) : (
+            <>
+              <Typography variant="h4" gutterBottom>
+                Connect to Spotify
+              </Typography>
+              <Typography variant="body1" sx={{ mb: 3, textAlign: "center" }}>
+                Login with your Spotify account to view your stats and playlists
+              </Typography>
+              <Button
+                variant="contained"
+                onClick={login}
+                size="large"
+                sx={{
+                  bgcolor: "#1db954",
+                  "&:hover": {
+                    bgcolor: "#1ed760",
+                  },
+                }}>
+                Log in with Spotify
+              </Button>
+            </>
+          )}
+        </Paper>
+      </Box>
+    </Container>
   );
 };
 

@@ -1,90 +1,64 @@
-import { getUserData, logout, redirectToSpotifyAuthorize, refreshToken, tokenManager } from "~/services/authCode";
-import type { UserProfile } from "~/types";
-import { useEffect, useState } from "react";
+import { AppBar, Avatar, Box, Button, CircularProgress, Stack, Toolbar, Typography } from "@mui/material";
+import { styled } from "@mui/material/styles";
+import { useAuthContext } from "~/providers";
 import { Link } from "react-router-dom";
 
+const StyledLink = styled(Link)({
+  color: "inherit",
+  textDecoration: "none",
+  "&:hover": {
+    color: "#1db954",
+  },
+});
+
 export const Navbar = () => {
-  const [userData, setUserData] = useState<UserProfile | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const handleLoginClick = async (): Promise<void> => {
-    try {
-      await redirectToSpotifyAuthorize();
-    } catch (error) {
-      setError("Failed to initiate login process");
-      console.error(error);
-    }
-  };
-
-  const handleLogoutClick = (): void => {
-    logout();
-    setUserData(null);
-  };
-
-  useEffect((): void => {
-    const fetchUserData = async (): Promise<void> => {
-      try {
-        setIsLoading(true);
-
-        if (tokenManager.isLoggedIn()) {
-          if (tokenManager.isExpired()) {
-            const token = await refreshToken();
-            tokenManager.save(token);
-          }
-
-          const profile = await getUserData();
-          setUserData(profile);
-        }
-
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Authentication error", error);
-        setError("Failed to fetch user data");
-        setIsLoading(false);
-      }
-    };
-
-    fetchUserData();
-  }, []);
+  const { user, isLoading, login, logout, isAuthenticated } = useAuthContext();
 
   return (
-    <nav className="navbar">
-      <div className="navbar-logo">
-        <Link to="/">Spotify App</Link>
-      </div>
+    <AppBar position="fixed" color="default" elevation={1}>
+      <Toolbar sx={{ justifyContent: "space-between" }}>
+        <Typography variant="h6" component="div">
+          <StyledLink to="/">SpotiStats</StyledLink>
+        </Typography>
 
-      <div className="navbar-menu">
-        <Link to="/browse">Browse</Link>
-        <Link to="/playlists">Playlists</Link>
-        {/* Add other navigation links as needed */}
-      </div>
-
-      <div className="navbar-auth">
-        {isLoading ? (
-          <div className="loading-indicator">Loading...</div>
-        ) : error ? (
-          <button onClick={handleLoginClick} className="login-button">
-            Log In
-          </button>
-        ) : userData ? (
-          <div className="user-profile">
-            {userData.images && userData.images.length > 0 ? (
-              <img src={userData.images[0].url} alt={userData.display_name} className="profile-thumbnail" />
-            ) : (
-              <div className="profile-placeholder">{userData.display_name?.charAt(0)}</div>
-            )}
-            <span className="user-name">{userData.display_name}</span>
-            <button onClick={handleLogoutClick} className="logout-button">
-              Log Out
-            </button>
-          </div>
-        ) : (
-          <button onClick={handleLoginClick} className="login-button">
-            Log In
-          </button>
+        {/* Navigation TODO */}
+        {isAuthenticated && (
+          <Stack direction="row" spacing={3} sx={{ flexGrow: 1, ml: 4 }}>
+            <StyledLink to="/home">Overall</StyledLink>
+            <StyledLink to="/songs">Songs</StyledLink>
+            <StyledLink to="/albums">Albums</StyledLink>
+            <StyledLink to="/artists">Artists</StyledLink>
+          </Stack>
         )}
-      </div>
-    </nav>
+
+        <Box>
+          {isLoading ? (
+            <CircularProgress size={24} />
+          ) : isAuthenticated && user ? (
+            <Stack direction="row" spacing={2} alignItems="center">
+              <Avatar src={user.images?.[0]?.url} alt={user.display_name} sx={{ width: 32, height: 32 }}>
+                {user.display_name?.charAt(0)}
+              </Avatar>
+              <Typography variant="body2">{user.display_name}</Typography>
+              <Button variant="outlined" color="inherit" onClick={logout} size="small">
+                Log Out
+              </Button>
+            </Stack>
+          ) : (
+            <Button
+              variant="contained"
+              onClick={login}
+              sx={{
+                bgcolor: "#1db954",
+                "&:hover": {
+                  bgcolor: "#1ed760",
+                },
+              }}>
+              Log In
+            </Button>
+          )}
+        </Box>
+      </Toolbar>
+    </AppBar>
   );
 };
