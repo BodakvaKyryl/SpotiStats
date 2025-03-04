@@ -3,8 +3,8 @@ import { red } from "@mui/material/colors";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
 import type { Route } from "./+types/root";
-import Providers from "./providers/providers";
 import "./app.css";
+import Providers from "./providers/providers";
 
 const theme = createTheme({
   cssVariables: true,

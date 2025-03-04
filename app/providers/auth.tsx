@@ -8,7 +8,7 @@ import {
 import type { SpotifyUserProfile } from "~/types";
 import { createContext, useContext, useEffect, useState, type PropsWithChildren } from "react";
 
-export type UserData = {
+export type AuthUserData = {
   user: SpotifyUserProfile | null;
   isLoading: boolean;
   error: string | null;
@@ -18,9 +18,9 @@ export type UserData = {
   refreshUserToken: () => Promise<void>;
 };
 
-const AuthContext = createContext<UserData | null>(null);
+const AuthContext = createContext<AuthUserData | null>(null);
 
-export const useAuthContext = (): UserData => {
+export const useAuthContext = (): AuthUserData => {
   const userData = useContext(AuthContext);
   if (!userData) throw Error("No user data provided");
 
@@ -68,6 +68,7 @@ export function AuthProvider({ children }: PropsWithChildren<AuthProviderProps>)
     }
   };
 
+  // TODO: rewrite with swr
   // Initialize auth state on component mount
   useEffect(() => {
     const initializeAuth = async (): Promise<void> => {
