@@ -9,7 +9,7 @@ import {
 } from "@/services/authCode";
 import type { SpotifyUserProfile } from "@/types";
 import { redirect } from "next/navigation";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState, type PropsWithChildren } from "react";
 // import  { type PropsWithChildren } from "react";
 import useSWRImmutable from "swr/immutable";
@@ -107,12 +107,12 @@ export function AuthProvider({ children }: PropsWithChildren<AuthProviderProps>)
   const isAuthenticated = isClient ? (TokenManager.isLoggedIn() && !!user) : false;
 
   useEffect(() => {
-    if (TokenManager.isLoggedIn() && !user && !isLoading) { //
+    if (isClient && TokenManager.isLoggedIn() && !user && !isLoading) {
       mutate();
     }
-  }, [user, isLoading, mutate]);
+  }, [user, isLoading, mutate, isClient]);
 
-  if (isLoading) {
+  if (isLoading && isClient) {
     return <div>Loading user data...</div>;
   }
 
@@ -120,7 +120,7 @@ export function AuthProvider({ children }: PropsWithChildren<AuthProviderProps>)
     <AuthContext.Provider
       value={{
         user,
-        isLoading: isLoading || !isClient,
+        isLoading: isLoading,
         error: error ? "Failed to fetch user data" : null,
         isAuthenticated,
         login,
