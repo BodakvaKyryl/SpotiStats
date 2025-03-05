@@ -44,7 +44,7 @@ export default function RootLayout({
         <ThemeProvider theme={theme}>
           <CssBaseline enableColorScheme />
           <Providers>
-            <Suspense>{children}</Suspense>
+            {children}
           </Providers>
         </ThemeProvider>
       </body>

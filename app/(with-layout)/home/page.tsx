@@ -31,17 +31,6 @@ export default function Home() {
   // }
 
   return (
-    <>
-      {/* <div className="container px-4 py-8 mx-auto">
-        <h1 className="mb-6 text-3xl font-bold">Welcome, {user?.display_name}!</h1>
-        <div className="p-6 bg-green-100 rounded-lg shadow">
-          <p className="text-lg">You are successfully logged in with Spotify.</p>
-          <p className="mt-2 text-gray-700">
-            You can now explore your Spotify stats and playlists using the navigation links above.
-          </p>
-        </div>
-      </div> */}
-
       <Container maxWidth="sm">
         <Box
           sx={{
@@ -72,12 +61,11 @@ export default function Home() {
             )}
           </Paper>
         </Box>
-      </Container>
-      {error && (
+        {error && (
         <Alert severity="error" sx={{ mb: 2 }}>
-          {error}
+          {JSON.stringify(error)}
         </Alert>
       )}
-    </>
+      </Container>
   );
 }
