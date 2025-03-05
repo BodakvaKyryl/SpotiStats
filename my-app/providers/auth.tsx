@@ -1,13 +1,16 @@
+"use client";
+
 import {
   getUserData,
   redirectToSpotifyAuthorize,
   refreshToken,
   logout as spotifyLogout,
   TokenManager,
-} from "~/services/authCode";
-import type { SpotifyUserProfile } from "~/types";
+} from "@/services/authCode";
+import type { SpotifyUserProfile } from "@/types";
+import { redirect } from "next/navigation";
 import { createContext, useContext, useEffect, type PropsWithChildren } from "react";
-import { useNavigate } from "react-router-dom";
+// import  { type PropsWithChildren } from "react";
 import useSWRImmutable from "swr/immutable";
 
 export type AuthUserData = {
@@ -33,7 +36,6 @@ export type AuthProviderProps = {
 };
 
 export function AuthProvider({ children }: PropsWithChildren<AuthProviderProps>) {
-  const navigate = useNavigate();
   const isClient = typeof window !== "undefined";
 
   const {
@@ -42,9 +44,9 @@ export function AuthProvider({ children }: PropsWithChildren<AuthProviderProps>)
     isLoading,
     mutate,
   } = useSWRImmutable(
-    TokenManager.isLoggedIn() ? "user-profile" : null,
+    isClient && TokenManager.isLoggedIn() ? "user-profile" : null,
     async () => {
-      if (TokenManager.isExpired()) {
+      if (isClient && TokenManager.isExpired()) {
         const token = await refreshToken();
         TokenManager.save(token);
       }
@@ -57,7 +59,9 @@ export function AuthProvider({ children }: PropsWithChildren<AuthProviderProps>)
       fallbackData: null,
       onError: (err) => {
         console.error("Failed to fetch user data", err);
-        TokenManager.clear();
+        if (isClient) {
+          TokenManager.clear();
+        }
       },
     }
   );
@@ -74,7 +78,7 @@ export function AuthProvider({ children }: PropsWithChildren<AuthProviderProps>)
   const logout = (): void => {
     spotifyLogout();
     mutate(null, { revalidate: false });
-    navigate("/");
+    redirect("/");
   };
 
   const refreshUserToken = async (): Promise<void> => {
@@ -96,7 +100,7 @@ export function AuthProvider({ children }: PropsWithChildren<AuthProviderProps>)
     }
   }, [user, isLoading, mutate]);
 
-  if (isClient && TokenManager.isLoggedIn() && isLoading) {
+  if (isLoading) {
     return <div>Loading user data...</div>;
   }
 

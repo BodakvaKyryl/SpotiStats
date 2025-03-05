@@ -45,7 +45,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <ThemeProvider theme={theme}>
-          <CssBaseline />
+          <CssBaseline enableColorScheme />
           <Providers>{children}</Providers>
         </ThemeProvider>
         <ScrollRestoration />

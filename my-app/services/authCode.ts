@@ -1,5 +1,5 @@
-import type { SpotifyUserProfile } from "~/types";
-import { authorizationEndpoint, clientId, redirectUrl, scope, tokenEndpoint } from "keys";
+import { environment } from "@/environment";
+import type { SpotifyUserProfile } from "@/types";
 
 interface SpotifyTokenResponse {
   access_token: string;
@@ -10,24 +10,32 @@ interface SpotifyTokenResponse {
 }
 
 export class TokenManager {
+  private static isClient(): boolean {
+    return typeof window !== "undefined" && typeof localStorage !== "undefined";
+    
+  }
+
   static get accessToken(): string | null {
-    return localStorage.getItem("access_token") || null;
+    return this.isClient() ? localStorage.getItem("access_token") || null : null;
   }
 
   static get refreshToken(): string | null {
-    return localStorage.getItem("refresh_token") || null;
+    return this.isClient() ? localStorage.getItem("refresh_token") || null : null;
   }
 
   static get expiresIn(): string | null {
-    return localStorage.getItem("expires_in") || null;
+    return this.isClient() ? localStorage.getItem("expires_in") || null : null;
   }
 
   static get expires(): Date | null {
+    if (!this.isClient()) return null;
     const expiresStr = localStorage.getItem("expires");
     return expiresStr ? new Date(expiresStr) : null;
   }
 
   static save(response: SpotifyTokenResponse): void {
+    if (!this.isClient()) return;
+
     const { access_token, refresh_token, expires_in } = response;
 
     console.log("Saving tokens to localStorage", { access_token: !!access_token, refresh_token: !!refresh_token });
@@ -42,6 +50,8 @@ export class TokenManager {
   }
 
   static clear(): void {
+    if (!this.isClient()) return;
+
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     localStorage.removeItem("expires_in");
@@ -50,6 +60,8 @@ export class TokenManager {
   }
 
   static isLoggedIn(): boolean {
+    if (!this.isClient()) return false;
+
     const result = !!this.accessToken && !!this.expires && new Date() < this.expires;
     console.log("Checking isLoggedIn", {
       hasAccessToken: !!this.accessToken,
@@ -61,43 +73,58 @@ export class TokenManager {
   }
 
   static isExpired(): boolean {
+    if (!this.isClient()) return true;
     return !!this.expires && new Date() > this.expires;
   }
 }
 
 export async function redirectToSpotifyAuthorize(): Promise<void> {
-  const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  const randomValues = crypto.getRandomValues(new Uint8Array(64));
-  const randomString = Array.from(randomValues)
-    .map((x) => possible[x % possible.length])
-    .join("");
+  try {
+    const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const randomValues = crypto.getRandomValues(new Uint8Array(64));
+    const randomString = Array.from(randomValues)
+      .map((x) => possible[x % possible.length])
+      .join("");
 
-  const codeVerifier = randomString;
-  const data = new TextEncoder().encode(codeVerifier);
-  const hashed = await crypto.subtle.digest("SHA-256", data);
+    const codeVerifier = randomString;
+    const data = new TextEncoder().encode(codeVerifier);
+    const hashed = await crypto.subtle.digest("SHA-256", data);
 
-  const codeChallenge = btoa(String.fromCharCode(...new Uint8Array(hashed)))
-    .replace(/=/g, "")
-    .replace(/\+/g, "-")
-    .replace(/\//g, "_");
+    const codeChallenge = btoa(String.fromCharCode(...new Uint8Array(hashed)))
+      .replace(/=/g, "")
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_");
 
-  localStorage.setItem("code_verifier", codeVerifier);
+    localStorage.setItem("code_verifier", codeVerifier);
 
-  const authUrl = new URL(authorizationEndpoint);
-  const params = {
-    response_type: "code",
-    client_id: clientId,
-    scope: scope,
-    code_challenge_method: "S256",
-    code_challenge: codeChallenge,
-    redirect_uri: redirectUrl,
-  };
+    const authUrl = new URL(environment.authorizationEndpoint);
+    const params = {
+      response_type: "code",
+      client_id: environment.clientId,
+      scope: environment.scope,
+      code_challenge_method: "S256",
+      code_challenge: codeChallenge,
+      redirect_uri: environment.redirectUrl,
+    };
 
-  authUrl.search = new URLSearchParams(params).toString();
-  window.location.href = authUrl.toString();
+    console.log("Spotify Authorization Request Details:", {
+      authorizationEndpoint: environment.authorizationEndpoint,
+      clientId: environment.clientId,
+      redirectUrl: environment.redirectUrl,
+      scope: environment.scope,
+      codeChallenge,
+    });
+
+    authUrl.search = new URLSearchParams(params).toString();
+    console.log("Full Authorization URL:", authUrl.toString());
+
+    window.location.href = authUrl.toString();
+  } catch (error) {
+    console.error("Error in redirectToSpotifyAuthorize:", error);
+    throw error;
+  }
 }
 
-// Exchanges an authorization code for an access token
 export async function getToken(code: string): Promise<SpotifyTokenResponse> {
   const codeVerifier = localStorage.getItem("code_verifier");
 
@@ -105,14 +132,14 @@ export async function getToken(code: string): Promise<SpotifyTokenResponse> {
     throw new Error("Code verifier not found in storage");
   }
 
-  const response = await fetch(tokenEndpoint, {
+  const response = await fetch(environment.tokenEndpoint, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({
-      client_id: clientId,
+      client_id: environment.clientId,
       grant_type: "authorization_code",
-      code: code,
-      redirect_uri: redirectUrl,
+      code,
+      redirect_uri: environment.redirectUrl,
       code_verifier: codeVerifier,
     }),
   });
@@ -124,7 +151,6 @@ export async function getToken(code: string): Promise<SpotifyTokenResponse> {
   return await response.json();
 }
 
-// Refreshes the current access token using the refresh token
 export async function refreshToken(): Promise<SpotifyTokenResponse> {
   const refreshToken = TokenManager.refreshToken;
 
@@ -132,11 +158,11 @@ export async function refreshToken(): Promise<SpotifyTokenResponse> {
     throw new Error("No refresh token available");
   }
 
-  const response = await fetch(tokenEndpoint, {
+  const response = await fetch(environment.tokenEndpoint, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({
-      client_id: clientId,
+      client_id: environment.clientId,
       grant_type: "refresh_token",
       refresh_token: refreshToken,
     }),
@@ -149,7 +175,6 @@ export async function refreshToken(): Promise<SpotifyTokenResponse> {
   return await response.json();
 }
 
-// Fetches the user's Spotify profile data
 export async function getUserData(): Promise<SpotifyUserProfile> {
   const accessToken = TokenManager.accessToken;
 
@@ -169,34 +194,47 @@ export async function getUserData(): Promise<SpotifyUserProfile> {
   return await response.json();
 }
 
-// Handles the authentication callback by extracting the code from the URL and exchanging it for an access token
 export async function handleAuthCallback(): Promise<boolean> {
-  const args = new URLSearchParams(window.location.search);
-  const code = args.get("code");
+  if (typeof window === "undefined") return false;
 
-  if (code) {
-    try {
+  try {
+    const args = new URLSearchParams(window.location.search);
+    const code = args.get("code");
+    const error = args.get("error");
+
+    console.log("Auth Callback Debug:", {
+      code: code ? "Present" : "Missing",
+      error: error || "None",
+    });
+
+    if (error) {
+      console.error("Spotify Authorization Error:", {
+        error,
+        errorDescription: args.get("error_description"),
+      });
+      return false;
+    }
+
+    if (code) {
       const token = await getToken(code);
       TokenManager.save(token);
 
-      // Remove code from URL for clean navigation
       const url = new URL(window.location.href);
       url.searchParams.delete("code");
       const updatedUrl = url.search ? url.href : url.href.replace("?", "");
       window.history.replaceState({}, document.title, updatedUrl);
 
       return true;
-    } catch (error) {
-      console.error("Authentication error:", error);
-      return false;
     }
-  }
 
-  return false;
+    return false;
+  } catch (error) {
+    console.error("Complete Authentication Error:", error);
+    return false;
+  }
 }
 
-// Logs the user out by clearing tokens from storage
 export function logout(): void {
   TokenManager.clear();
-  window.location.href = redirectUrl;
+  window.location.href = environment.redirectUrl;
 }
