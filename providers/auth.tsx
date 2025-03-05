@@ -5,13 +5,11 @@ import {
   redirectToSpotifyAuthorize,
   refreshToken,
   logout as spotifyLogout,
-  TokenManager,
+  TokenManager
 } from "@/services/authCode";
 import type { SpotifyUserProfile } from "@/types";
-import { redirect } from "next/navigation";
-import { useRouter } from "next/navigation";
-import { createContext, useContext, useEffect, useState, type PropsWithChildren } from "react";
-// import  { type PropsWithChildren } from "react";
+import { redirect, useRouter } from "next/navigation";
+import { createContext, useContext, useEffect, type PropsWithChildren } from "react";
 import useSWRImmutable from "swr/immutable";
 
 export type AuthUserData = {
@@ -37,22 +35,12 @@ export type AuthProviderProps = {
 };
 
 export function AuthProvider({ children }: PropsWithChildren<AuthProviderProps>) {
-  const [isClient, setIsClient] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    setIsClient(true);
-  }, [])
-
-  const {
-    data: user,
-    error,
-    isLoading,
-    mutate,
-  } = useSWRImmutable(
-    isClient && TokenManager.isLoggedIn() ? "user-profile" : null,
+  const {data: user, error, isLoading, mutate } = useSWRImmutable(
+    "user-profile" ,
     async () => {
-      if (isClient && TokenManager.isExpired()) {
+      if (TokenManager.isLoggedIn() && TokenManager.isExpired()) {
         try {
           const token = await refreshToken();
           TokenManager.save(token);
@@ -64,19 +52,10 @@ export function AuthProvider({ children }: PropsWithChildren<AuthProviderProps>)
       }
       return getUserData();
     },
-    {
-      revalidateOnMount: true,
-      revalidateOnFocus: false,
-      errorRetryCount: 3,
-      fallbackData: null,
-      onError: (err) => {
-        console.error("Failed to fetch user data", err);
-        if (isClient) {
-          TokenManager.clear();
-        }
-      },
-    }
-  );
+    // {
+    //   revalidateOnMount:
+    // }
+  )
 
   const login = async (): Promise<void> => {
     try {
@@ -97,22 +76,24 @@ export function AuthProvider({ children }: PropsWithChildren<AuthProviderProps>)
     try {
       const token = await refreshToken();
       TokenManager.save(token);
-      await mutate();
+      // await mutate();
     } catch (error) {
       console.error("Failed to refresh token", error);
       throw error;
     }
   };
 
-  const isAuthenticated = isClient ? (TokenManager.isLoggedIn() && !!user) : false;
+  const isAuthenticated =   (TokenManager.isLoggedIn() && !!user) 
+
+  //
 
   useEffect(() => {
-    if (isClient && TokenManager.isLoggedIn() && !user && !isLoading) {
-      mutate();
+    if (  TokenManager.isLoggedIn() && !user && !isLoading) {
+      // mutate();
     }
-  }, [user, isLoading, mutate, isClient]);
+  }, [user, isLoading,  ])
 
-  if (isLoading && isClient) {
+  if (isLoading  ){
     return <div>Loading user data...</div>;
   }
 

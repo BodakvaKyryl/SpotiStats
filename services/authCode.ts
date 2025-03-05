@@ -62,7 +62,7 @@ export class TokenManager {
   static isLoggedIn(): boolean {
     if (!this.isClient()) return false;
 
-    const result = !!this.accessToken && !!this.expires && new Date() < this.expires;
+    const result = !!this.accessToken;
     console.log("Checking isLoggedIn", {
       hasAccessToken: !!this.accessToken,
       hasExpires: !!this.expires,

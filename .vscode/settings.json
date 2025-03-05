@@ -41,5 +41,8 @@
   "files.autoSave": "onFocusChange",
   "files.associations": {
     "*.css": "postcss"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "ms-vsliveshare.vsliveshare"
   }
 }
