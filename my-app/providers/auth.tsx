@@ -9,7 +9,8 @@ import {
 } from "@/services/authCode";
 import type { SpotifyUserProfile } from "@/types";
 import { redirect } from "next/navigation";
-import { createContext, useContext, useEffect, type PropsWithChildren } from "react";
+import { useRouter } from "next/router";
+import { createContext, useContext, useEffect, useState, type PropsWithChildren } from "react";
 // import  { type PropsWithChildren } from "react";
 import useSWRImmutable from "swr/immutable";
 
@@ -36,7 +37,12 @@ export type AuthProviderProps = {
 };
 
 export function AuthProvider({ children }: PropsWithChildren<AuthProviderProps>) {
-  const isClient = typeof window !== "undefined";
+  const [isClient, setIsClient] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    setIsClient(true);
+  }, [])
 
   const {
     data: user,
@@ -47,8 +53,14 @@ export function AuthProvider({ children }: PropsWithChildren<AuthProviderProps>)
     isClient && TokenManager.isLoggedIn() ? "user-profile" : null,
     async () => {
       if (isClient && TokenManager.isExpired()) {
-        const token = await refreshToken();
-        TokenManager.save(token);
+        try {
+          const token = await refreshToken();
+          TokenManager.save(token);
+        } catch (error) {
+          console.error("Token refresh failed:", error);
+          TokenManager.clear();
+          return null;
+        }
       }
       return getUserData();
     },
@@ -92,10 +104,10 @@ export function AuthProvider({ children }: PropsWithChildren<AuthProviderProps>)
     }
   };
 
-  const isAuthenticated = isClient && TokenManager.isLoggedIn() && !!user;
+  const isAuthenticated = isClient ? (TokenManager.isLoggedIn() && !!user) : false;
 
   useEffect(() => {
-    if (TokenManager.isLoggedIn() && !user && !isLoading) {
+    if (TokenManager.isLoggedIn() && !user && !isLoading) { //
       mutate();
     }
   }, [user, isLoading, mutate]);
