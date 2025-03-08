@@ -40,25 +40,19 @@ export function AuthProvider({ children }: PropsWithChildren<AuthProviderProps>)
     error,
     isLoading,
     mutate,
-  } = useSWRImmutable(
-    "user-profile",
-    async () => {
-      if (TokenManager.isLoggedIn() && TokenManager.isExpired()) {
-        try {
-          const token = await refreshToken();
-          TokenManager.save(token);
-        } catch (error) {
-          console.error("Token refresh failed:", error);
-          TokenManager.clear();
-          return null;
-        }
+  } = useSWRImmutable(TokenManager.isLoggedIn() ? "user-profile" : null, async () => {
+    if (TokenManager.isLoggedIn() && TokenManager.isExpired()) {
+      try {
+        const token = await refreshToken();
+        TokenManager.save(token);
+      } catch (error) {
+        console.error("Token refresh failed:", error);
+        TokenManager.clear();
+        return null;
       }
-      return getUserData();
     }
-    // {
-    //   revalidateOnMount:
-    // }
-  );
+    return getUserData();
+  });
 
   const login = async (): Promise<void> => {
     try {

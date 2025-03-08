@@ -1,4 +1,4 @@
-import axios, { type AxiosRequestConfig } from "axios";
+import axios from "axios";
 import type { PropsWithChildren } from "react";
 import { SWRConfig } from "swr";
 
@@ -6,19 +6,16 @@ export function SWRProvider({ children }: PropsWithChildren) {
   return (
     <SWRConfig
       value={{
-        // Do not refresh the data by default
-        fetcher: fetcher,
+        fetcher: (resource, init) => {
+          if (Array.isArray(resource)) {
+            const [url, config] = resource;
+            return axios.get(url, config).then((res) => res.data);
+          } else {
+            return axios.get(resource, init).then((res) => res.data);
+          }
+        },
       }}>
       {children}
     </SWRConfig>
   );
 }
-
-// Fetcher to fetch data from any api using fetch
-const fetcher = async ([url, config]: [string, AxiosRequestConfig]) => {
-  console.log("before fetcher", url, config);
-
-  const res = await axios.get(url, config).then((res) => res.data);
-  console.log("swr", res);
-  return res;
-};

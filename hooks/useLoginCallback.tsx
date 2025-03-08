@@ -8,25 +8,21 @@ import useSWRImmutable from "swr/immutable";
 
 export const useLoginCallback = () => {
   const searchParams = useSearchParams();
-  console.log(searchParams, "searchParams - login component");
   const code = searchParams.get("code");
-
   const { refreshUserToken } = useAuthContext();
 
   const processCallback = useCallback(async () => {
-    console.log("before handleAuthCallback");
+    if (!code) return null;
 
     const success = await handleAuthCallback();
     if (success) {
-      console.log("before refreshUserToken");
-
       await refreshUserToken();
+      return true;
     }
-  }, [refreshUserToken]);
+    return false;
+  }, [code, refreshUserToken]);
 
-  const { error, isLoading, isValidating, data } = useSWRImmutable("login-callback", code ? processCallback : null);
-
-  console.log(data, "data - login component");
+  const { error, isLoading, isValidating, data } = useSWRImmutable(code ? "login-callback" : null, processCallback);
 
   return {
     isLoading: isLoading || isValidating,
