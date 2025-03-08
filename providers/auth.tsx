@@ -9,7 +9,7 @@ import {
 } from "@/services/authCode";
 import type { SpotifyUserProfile } from "@/types";
 import { redirect } from "next/navigation";
-import { createContext, useContext, useEffect, type PropsWithChildren } from "react";
+import { createContext, useContext, useEffect, useState, type PropsWithChildren } from "react";
 import useSWRImmutable from "swr/immutable";
 
 export type AuthUserData = {
@@ -35,6 +35,8 @@ export type AuthProviderProps = {
 };
 
 export function AuthProvider({ children }: PropsWithChildren<AuthProviderProps>) {
+  const [initialCheckDone, setInitialCheckDone] = useState(false);
+
   const {
     data: user,
     error,
@@ -66,14 +68,15 @@ export function AuthProvider({ children }: PropsWithChildren<AuthProviderProps>)
   const logout = (): void => {
     spotifyLogout();
     mutate(null, { revalidate: false });
-    redirect("/");
+    redirect("/login");
   };
 
   const refreshUserToken = async (): Promise<void> => {
     try {
       const token = await refreshToken();
       TokenManager.save(token);
-      // await mutate();
+      await mutate(undefined, { revalidate: true });
+      console.log("User data refreshed, authenticated:", !!user);
     } catch (error) {
       console.error("Failed to refresh token", error);
       throw error;
@@ -82,13 +85,39 @@ export function AuthProvider({ children }: PropsWithChildren<AuthProviderProps>)
 
   const isAuthenticated = TokenManager.isLoggedIn() && !!user;
 
-  useEffect(() => {
-    if (TokenManager.isLoggedIn() && !user && !isLoading) {
-      // mutate();
-    }
-  }, [user, isLoading]);
+  console.log("Auth state:", {
+    tokenExists: TokenManager.isLoggedIn(),
+    userExists: !!user,
+    isAuthenticated,
+  });
 
-  if (isLoading) {
+  useEffect(() => {
+    if (!initialCheckDone) {
+      const path = window.location.pathname;
+
+      if (path !== "/login" && path !== "/callback") {
+        if (!TokenManager.isLoggedIn()) {
+          redirect("/login");
+        } else if (!user && !isLoading) {
+          mutate();
+        }
+      } else if (path === "/login" && TokenManager.isLoggedIn() && user) {
+        redirect("/home");
+      }
+
+      setInitialCheckDone(true);
+    }
+  }, [user, isLoading, initialCheckDone, mutate]);
+
+  useEffect(() => {
+    if (!initialCheckDone) {
+      const path = window.location.pathname;
+      console.log("Initial auth check, path:", path);
+      setInitialCheckDone(true);
+    }
+  }, [initialCheckDone]);
+
+  if (isLoading && !initialCheckDone) {
     return <div>Loading user data...</div>;
   }
 
@@ -96,7 +125,7 @@ export function AuthProvider({ children }: PropsWithChildren<AuthProviderProps>)
     <AuthContext.Provider
       value={{
         user,
-        isLoading: isLoading,
+        isLoading,
         error: error ? "Failed to fetch user data" : null,
         isAuthenticated,
         login,
