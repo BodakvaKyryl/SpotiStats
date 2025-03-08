@@ -1,4 +1,5 @@
-"use client"
+"use client";
+
 import { useAuthContext } from "@/providers/auth";
 import { handleAuthCallback } from "@/services/authCode";
 import { useSearchParams } from "next/navigation";

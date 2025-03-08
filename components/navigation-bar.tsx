@@ -5,7 +5,6 @@ import { AppBar, Avatar, Box, Button, CircularProgress, Stack, Toolbar, Typograp
 import { styled } from "@mui/material/styles";
 import Link from "next/link";
 
-
 const StyledLink = styled(Link)({
   color: "inherit",
   textDecoration: "none",

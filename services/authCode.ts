@@ -12,7 +12,6 @@ interface SpotifyTokenResponse {
 export class TokenManager {
   private static isClient(): boolean {
     return typeof window !== "undefined" && typeof localStorage !== "undefined";
-    
   }
 
   static get accessToken(): string | null {

@@ -16,10 +16,9 @@ export function SWRProvider({ children }: PropsWithChildren) {
 
 // Fetcher to fetch data from any api using fetch
 const fetcher = async ([url, config]: [string, AxiosRequestConfig]) => {
-  console.log('before fetcher', url, config);
+  console.log("before fetcher", url, config);
 
   const res = await axios.get(url, config).then((res) => res.data);
   console.log("swr", res);
   return res;
-
 };

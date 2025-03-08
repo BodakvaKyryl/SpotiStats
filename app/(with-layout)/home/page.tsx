@@ -31,41 +31,41 @@ export default function Home() {
   // }
 
   return (
-      <Container maxWidth="sm">
-        <Box
+    <Container maxWidth="sm">
+      <Box
+        sx={{
+          mt: 10,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 3,
+        }}>
+        <Paper
+          elevation={3}
           sx={{
-            mt: 10,
+            p: 4,
+            width: "100%",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            gap: 3,
           }}>
-          <Paper
-            elevation={3}
-            sx={{
-              p: 4,
-              width: "100%",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}>
-            {isAuthenticated && (
-              <>
-                <Typography variant="h5" gutterBottom>
-                  Welcome back, {user?.display_name}
-                </Typography>
-                <Typography variant="body1" sx={{ mb: 2 }}>
-                  You are now logged in!
-                </Typography>
-              </>
-            )}
-          </Paper>
-        </Box>
-        {error && (
+          {isAuthenticated && (
+            <>
+              <Typography variant="h5" gutterBottom>
+                Welcome back, {user?.display_name}
+              </Typography>
+              <Typography variant="body1" sx={{ mb: 2 }}>
+                You are now logged in!
+              </Typography>
+            </>
+          )}
+        </Paper>
+      </Box>
+      {error && (
         <Alert severity="error" sx={{ mb: 2 }}>
           {JSON.stringify(error)}
         </Alert>
       )}
-      </Container>
+    </Container>
   );
 }

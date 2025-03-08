@@ -5,10 +5,10 @@ import {
   redirectToSpotifyAuthorize,
   refreshToken,
   logout as spotifyLogout,
-  TokenManager
+  TokenManager,
 } from "@/services/authCode";
 import type { SpotifyUserProfile } from "@/types";
-import { redirect, useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 import { createContext, useContext, useEffect, type PropsWithChildren } from "react";
 import useSWRImmutable from "swr/immutable";
 
@@ -35,10 +35,13 @@ export type AuthProviderProps = {
 };
 
 export function AuthProvider({ children }: PropsWithChildren<AuthProviderProps>) {
-  const router = useRouter();
-
-  const {data: user, error, isLoading, mutate } = useSWRImmutable(
-    "user-profile" ,
+  const {
+    data: user,
+    error,
+    isLoading,
+    mutate,
+  } = useSWRImmutable(
+    "user-profile",
     async () => {
       if (TokenManager.isLoggedIn() && TokenManager.isExpired()) {
         try {
@@ -51,11 +54,11 @@ export function AuthProvider({ children }: PropsWithChildren<AuthProviderProps>)
         }
       }
       return getUserData();
-    },
+    }
     // {
     //   revalidateOnMount:
     // }
-  )
+  );
 
   const login = async (): Promise<void> => {
     try {
@@ -83,17 +86,15 @@ export function AuthProvider({ children }: PropsWithChildren<AuthProviderProps>)
     }
   };
 
-  const isAuthenticated =   (TokenManager.isLoggedIn() && !!user) 
-
-  //
+  const isAuthenticated = TokenManager.isLoggedIn() && !!user;
 
   useEffect(() => {
-    if (  TokenManager.isLoggedIn() && !user && !isLoading) {
+    if (TokenManager.isLoggedIn() && !user && !isLoading) {
       // mutate();
     }
-  }, [user, isLoading,  ])
+  }, [user, isLoading]);
 
-  if (isLoading  ){
+  if (isLoading) {
     return <div>Loading user data...</div>;
   }
 
