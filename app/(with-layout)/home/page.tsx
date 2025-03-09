@@ -4,6 +4,7 @@ import { Box, CircularProgress, Container, Paper, Typography, Button } from "@mu
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import Image from "next/image";
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -57,15 +58,23 @@ export default function Home() {
           </Typography>
 
           {session?.user?.image && (
-            <Box sx={{ mb: 3 }}>
-              <img
+            <Box
+              sx={{
+                mb: 3,
+                position: "relative",
+                width: "100px",
+                height: "100px",
+              }}>
+              <Image
                 src={session.user.image}
                 alt="Profile"
+                fill
                 style={{
-                  width: "100px",
-                  height: "100px",
                   borderRadius: "50%",
+                  objectFit: "cover",
                 }}
+                sizes="100px"
+                priority
               />
             </Box>
           )}
