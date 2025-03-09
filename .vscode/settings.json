@@ -12,7 +12,7 @@
     "source.fixAll.markdownlint": "always",
     "source.fixAll.sortJSON": "never",
     "source.generate.finalModifiers": "always",
-    "source.organizeImports": "always",
+    "source.organizeImports": "never",
     "source.sortMembers": "always"
   },
   "editor.inlineSuggest.enabled": true,
