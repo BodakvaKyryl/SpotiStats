@@ -1,11 +1,12 @@
 "use client";
 
-import Providers from "@/providers/providers";
 import { ThemeProvider } from "@emotion/react";
 import { createTheme, CssBaseline } from "@mui/material";
 import { red } from "@mui/material/colors";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { PropsWithChildren } from "react";
+import NextAuthProvider from "@/providers/nextAuthProvider";
 
 const theme = createTheme({
   cssVariables: true,
@@ -32,17 +33,13 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ThemeProvider theme={theme}>
           <CssBaseline enableColorScheme />
-          <Providers>{children}</Providers>
+          <NextAuthProvider> {children} </NextAuthProvider>
         </ThemeProvider>
       </body>
     </html>

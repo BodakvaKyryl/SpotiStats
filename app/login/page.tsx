@@ -1,11 +1,13 @@
 "use client";
 
-import { useAuthContext } from "@/providers";
 import { Box, Button, Container, Paper, Typography } from "@mui/material";
+import { signIn, useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 
 const SpotifyLoginPage = () => {
-  const { isAuthenticated, login, user } = useAuthContext();
+  const { data: session, status } = useSession();
+  const isLoading = status === "loading";
+  const isAuthenticated = status === "authenticated";
 
   return (
     <Container maxWidth="sm">
@@ -26,10 +28,12 @@ const SpotifyLoginPage = () => {
             flexDirection: "column",
             alignItems: "center",
           }}>
-          {isAuthenticated ? (
+          {isLoading ? (
+            <Typography variant="body1">Checking authentication status...</Typography>
+          ) : isAuthenticated && session?.user ? (
             <>
               <Typography variant="h5" gutterBottom>
-                Welcome back, {user?.display_name}
+                Welcome back, {session.user.name}
               </Typography>
               <Typography variant="body1" sx={{ mb: 2 }}>
                 You are now logged in!
@@ -48,7 +52,7 @@ const SpotifyLoginPage = () => {
               </Typography>
               <Button
                 variant="contained"
-                onClick={login}
+                onClick={() => signIn("spotify", { callbackUrl: "/home" })}
                 size="large"
                 sx={{
                   bgcolor: "#1db954",

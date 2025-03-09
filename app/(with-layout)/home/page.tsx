@@ -1,34 +1,34 @@
 "use client";
 
-import { useLoginCallback } from "@/hooks";
-import { useAuthContext } from "@/providers";
-import { Alert, Box, CircularProgress, Container, Paper, Typography } from "@mui/material";
-
-// import { useNavigate } from "react-router";
+import { Box, CircularProgress, Container, Paper, Typography, Button } from "@mui/material";
+import { useSession, signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Home() {
-  const { error, isLoading: isLogLoading } = useLoginCallback();
-  const { isAuthenticated, user, isLoading: isAuthLoading } = useAuthContext();
-  // const navigate = useNavigate();
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const isLoading = status === "loading";
+  const isAuthenticated = status === "authenticated";
 
-  const isLoading = isLogLoading || isAuthLoading;
-
-  // useEffect(() => {
-  //   if (!isLoading && !isAuthenticated) {
-  //     console.log("Home page: Not authenticated, redirecting to login");
-  //     // navigate("/login");
-  //   } else if (!isLoading && !isAuthenticated) {
-  //     console.log("Home page: User is authenticated", !!user);
-  //   }
-  // }, [isAuthenticated, isLoading, navigate]);
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      console.log("Home page: Not authenticated, redirecting to login");
+      router.push("/");
+    }
+  }, [isAuthenticated, isLoading, router]);
 
   if (isLoading) {
-    return <CircularProgress />;
+    return (
+      <Container sx={{ display: "flex", justifyContent: "center", mt: 10 }}>
+        <CircularProgress />
+      </Container>
+    );
   }
 
-  // if (!isAuthenticated) {
-  //   return null;
-  // }
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <Container maxWidth="sm">
@@ -49,23 +49,32 @@ export default function Home() {
             flexDirection: "column",
             alignItems: "center",
           }}>
-          {isAuthenticated && (
-            <>
-              <Typography variant="h5" gutterBottom>
-                Welcome back, {user?.display_name}
-              </Typography>
-              <Typography variant="body1" sx={{ mb: 2 }}>
-                You are now logged in!
-              </Typography>
-            </>
+          <Typography variant="h5" gutterBottom>
+            Welcome back, {session?.user?.name}
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 2 }}>
+            You are now logged in with Spotify!
+          </Typography>
+
+          {session?.user?.image && (
+            <Box sx={{ mb: 3 }}>
+              <img
+                src={session.user.image}
+                alt="Profile"
+                style={{
+                  width: "100px",
+                  height: "100px",
+                  borderRadius: "50%",
+                }}
+              />
+            </Box>
           )}
+
+          <Button variant="outlined" color="primary" onClick={() => signOut({ callbackUrl: "/" })} sx={{ mt: 2 }}>
+            Sign Out
+          </Button>
         </Paper>
       </Box>
-      {error && (
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {JSON.stringify(error)}
-        </Alert>
-      )}
     </Container>
   );
 }

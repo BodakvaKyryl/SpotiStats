@@ -1,13 +1,13 @@
 "use client";
 
 import { PropsWithChildren } from "react";
-import { AuthProvider } from "./auth";
 import { SWRProvider } from "./swr";
+import NextAuthProvider from "./nextAuthProvider";
 
 const Providers = ({ children }: PropsWithChildren) => {
   return (
     <SWRProvider>
-      <AuthProvider>{children}</AuthProvider>
+      <NextAuthProvider>{children}</NextAuthProvider>
     </SWRProvider>
   );
 };
