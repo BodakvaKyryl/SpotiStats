@@ -8,18 +8,12 @@ import "./globals.css";
 import { PropsWithChildren } from "react";
 import NextAuthProvider from "@/providers/nextAuthProvider";
 
-const theme = createTheme({
-  cssVariables: true,
+const darkTheme = createTheme({
   palette: {
-    primary: {
-      main: "#556cd6",
-    },
-    secondary: {
-      main: "#19857b",
-    },
-    error: {
-      main: red.A400,
-    },
+    mode: "dark",
+    primary: { main: "#1db954" },
+    secondary: { main: "#1db954" },
+    error: { main: red.A400 },
   },
 });
 
@@ -37,7 +31,7 @@ export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={darkTheme}>
           <CssBaseline enableColorScheme />
           <NextAuthProvider> {children} </NextAuthProvider>
         </ThemeProvider>

@@ -1,3 +1,3 @@
 export default function Home() {
-  return <>page</>;
+  return <>Home App page</>;
 }

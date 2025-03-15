@@ -15,7 +15,7 @@ export default function Home() {
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       console.log("Home page: Not authenticated, redirecting to login");
-      router.push("/");
+      router.push("/login");
     }
   }, [isAuthenticated, isLoading, router]);
 
@@ -28,7 +28,11 @@ export default function Home() {
   }
 
   if (!isAuthenticated) {
-    return null;
+    return (
+      <Container sx={{ display: "flex", justifyContent: "center", mt: 10 }}>
+        <CircularProgress />
+      </Container>
+    );
   }
 
   return (
@@ -79,8 +83,8 @@ export default function Home() {
             </Box>
           )}
 
-          <Button variant="outlined" color="primary" onClick={() => signOut({ callbackUrl: "/" })} sx={{ mt: 2 }}>
-            Sign Out
+          <Button variant="contained" color="primary" onClick={() => signOut({ callbackUrl: "/" })} sx={{ mt: 2 }}>
+            Log Out
           </Button>
         </Paper>
       </Box>

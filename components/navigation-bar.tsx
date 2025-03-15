@@ -1,9 +1,10 @@
 "use client";
 
-import { AppBar, Avatar, Box, Button, CircularProgress, Stack, Toolbar, Typography } from "@mui/material";
+import { AppBar, Avatar, Box, CircularProgress, Stack, Toolbar, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
+import { LogoutButton, SpotifyButton } from "./button/button.component";
 
 const StyledLink = styled(Link)({
   color: "inherit",
@@ -46,22 +47,10 @@ export const Navbar = () => {
                 {session.user.name?.charAt(0)}
               </Avatar>
               <Typography variant="body2">{session.user.name}</Typography>
-              <Button variant="outlined" color="inherit" onClick={() => signOut({ callbackUrl: "/" })} size="small">
-                Log Out
-              </Button>
+              <LogoutButton onClick={() => signOut({ callbackUrl: "/login" })}>Log Out</LogoutButton>
             </Stack>
           ) : (
-            <Button
-              variant="contained"
-              onClick={() => signIn("spotify")}
-              sx={{
-                bgcolor: "#1db954",
-                "&:hover": {
-                  bgcolor: "#1ed760",
-                },
-              }}>
-              Log In
-            </Button>
+            <SpotifyButton onClick={() => signIn("spotify")}>Log In</SpotifyButton>
           )}
         </Box>
       </Toolbar>
