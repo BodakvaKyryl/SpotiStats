@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { Container, Typography, List, ListItem, ListItemText, CircularProgress } from "@mui/material";
-import { Artist } from "@/types";
+import { Container, Typography, List, CircularProgress } from "@mui/material";
+import { SongItem } from "../elements/song";
 
 const TopSongs = () => {
   const { data: session, status } = useSession();
@@ -14,11 +14,18 @@ const TopSongs = () => {
     const fetchTopSongs = async () => {
       if (status === "authenticated" && session?.accessToken) {
         try {
-          const response = await fetch("https://api.spotify.com/v1/me/top/tracks", {
-            headers: {
-              Authorization: `Bearer ${session.accessToken}`,
-            },
-          });
+          const response = await fetch(
+            "https://api.spotify.com/v1/me/top/tracks?" +
+              new URLSearchParams({
+                limit: "50",
+                time_range: "long_term",
+              }).toString(),
+            {
+              headers: {
+                Authorization: `Bearer ${session.accessToken}`,
+              },
+            }
+          );
           const data = await response.json();
           setTopSongs(data.items);
         } catch (error) {
@@ -47,12 +54,13 @@ const TopSongs = () => {
       </Typography>
       <List>
         {topSongs.map((song) => (
-          <ListItem key={song.id}>
-            <ListItemText
-              primary={song.name}
-              secondary={song.artists.map((artist: Artist) => artist.name).join(", ")}
-            />
-          </ListItem>
+          <SongItem
+            key={song.id}
+            id={song.id}
+            name={song.name}
+            artists={song.artists}
+            albumImageUrl={song.album.images[0]?.url}
+          />
         ))}
       </List>
     </Container>
