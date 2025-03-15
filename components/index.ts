@@ -1,2 +1,2 @@
-export * from "./navigation-bar";
-export * from "./button/button.component";
+export * from "./layouts/navigation-bar";
+export * from "./elements/button";

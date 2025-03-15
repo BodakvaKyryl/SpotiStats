@@ -3,6 +3,9 @@ export interface Image {
   height: number;
   width: number;
 }
+export interface Artist {
+  name: string;
+}
 
 export interface SpotifyUserProfile {
   country: string;

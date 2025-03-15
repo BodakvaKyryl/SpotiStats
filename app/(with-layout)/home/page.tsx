@@ -5,6 +5,7 @@ import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Image from "next/image";
+import TopSongs from "@/components/layouts/top-songs";
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -87,6 +88,7 @@ export default function Home() {
             Log Out
           </Button>
         </Paper>
+        <TopSongs />
       </Box>
     </Container>
   );

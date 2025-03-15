@@ -4,13 +4,14 @@ import { AppBar, Avatar, Box, CircularProgress, Stack, Toolbar, Typography } fro
 import { styled } from "@mui/material/styles";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
-import { LogoutButton, SpotifyButton } from "./button/button.component";
+import { LogoutButton, SpotifyButton } from "../elements/button";
+import { colors } from "@/styles/colors";
 
 const StyledLink = styled(Link)({
   color: "inherit",
   textDecoration: "none",
   "&:hover": {
-    color: "#1db954",
+    color: colors.spotifyGreen,
   },
 });
 
