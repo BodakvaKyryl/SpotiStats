@@ -1,9 +1,6 @@
-import { ListItem, ListItemAvatar, ListItemText, Avatar } from "@mui/material";
-import { SpotifyTrack } from "@/types/track.type";
-
-interface SongItemProps {
-  song: SpotifyTrack;
-}
+import { ListItem, ListItemAvatar, ListItemText, Avatar, Typography, Box } from "@mui/material";
+import { formatDuration } from "@/utils/format";
+import { SongItemProps } from "@/types/song.type";
 
 export const SongItem = ({ song }: SongItemProps) => (
   <ListItem>
@@ -15,6 +12,16 @@ export const SongItem = ({ song }: SongItemProps) => (
         variant="square"
       />
     </ListItemAvatar>
-    <ListItemText primary={song.name} secondary={song.artists.map((artist) => artist.name).join(", ")} />
+    <ListItemText
+      primary={
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <Typography component="span">{song.name}</Typography>
+          <Typography component="span" variant="body2" color="text.secondary">
+            {formatDuration(song.duration_ms)}
+          </Typography>
+        </Box>
+      }
+      secondary={song.artists.map((artist) => artist.name).join(", ")}
+    />
   </ListItem>
 );

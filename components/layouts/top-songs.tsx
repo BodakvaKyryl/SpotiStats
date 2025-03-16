@@ -1,18 +1,27 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
-import { Container, Typography, List, CircularProgress } from "@mui/material";
+import { useSession, signOut } from "next-auth/react";
+import { Container, Typography, List } from "@mui/material";
 import { SongItem } from "../elements/song";
+import { SpotifySong } from "@/types/song.type";
+import { ErrorContainer, ProcessImage } from "../elements/error-container";
 
 const TopSongs = () => {
   const { data: session, status } = useSession();
-  const [topSongs, setTopSongs] = useState([]);
+  const [topSongs, setTopSongs] = useState<SpotifySong[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchTopSongs = async () => {
       if (status === "authenticated" && session?.accessToken) {
+        if (session.error === "RefreshAccessTokenError") {
+          setError("Your session has expired. Please sign in again.");
+          signOut({ callbackUrl: "/login" });
+          return;
+        }
+
         try {
           const response = await fetch(
             "https://api.spotify.com/v1/me/top/tracks?" +
@@ -26,10 +35,17 @@ const TopSongs = () => {
               },
             }
           );
+
+          if (!response.ok) {
+            throw new Error(`Failed to fetch: ${response.status}`);
+          }
+
           const data = await response.json();
           setTopSongs(data.items);
+          setError(null);
         } catch (error) {
           console.error("Error fetching top songs:", error);
+          setError("Failed to load your top songs. Please try again later.");
         } finally {
           setLoading(false);
         }
@@ -40,11 +56,11 @@ const TopSongs = () => {
   }, [session, status]);
 
   if (loading) {
-    return (
-      <Container sx={{ display: "flex", justifyContent: "center", mt: 10 }}>
-        <CircularProgress />
-      </Container>
-    );
+    return <ProcessImage />;
+  }
+
+  if (error) {
+    return <ErrorContainer message={error} />;
   }
 
   return (
