@@ -1,12 +1,3 @@
-export interface Image {
-  url: string;
-  height: number;
-  width: number;
-}
-export interface Artist {
-  name: string;
-}
-
 export interface SpotifyUserProfile {
   country: string;
   display_name: string;

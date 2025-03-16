@@ -54,13 +54,7 @@ const TopSongs = () => {
       </Typography>
       <List>
         {topSongs.map((song) => (
-          <SongItem
-            key={song.id}
-            id={song.id}
-            name={song.name}
-            artists={song.artists}
-            albumImageUrl={song.album.images[0]?.url}
-          />
+          <SongItem key={song.id} song={song} />
         ))}
       </List>
     </Container>

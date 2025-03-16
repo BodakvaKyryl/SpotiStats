@@ -1,18 +1,20 @@
 import { ListItem, ListItemAvatar, ListItemText, Avatar } from "@mui/material";
-import { Artist } from "@/types";
+import { SpotifyTrack } from "@/types/track.type";
 
 interface SongItemProps {
-  id: string;
-  name: string;
-  artists: Artist[];
-  albumImageUrl?: string;
+  song: SpotifyTrack;
 }
 
-export const SongItem = ({ id, name, artists, albumImageUrl }: SongItemProps) => (
-  <ListItem key={id}>
+export const SongItem = ({ song }: SongItemProps) => (
+  <ListItem>
     <ListItemAvatar>
-      <Avatar alt={name} src={albumImageUrl} sx={{ width: 56, height: 56, marginRight: 2 }} variant="square" />
+      <Avatar
+        alt={song.name}
+        src={song.album.images[0]?.url}
+        sx={{ width: 56, height: 56, marginRight: 2 }}
+        variant="square"
+      />
     </ListItemAvatar>
-    <ListItemText primary={name} secondary={artists.map((artist) => artist.name).join(", ")} />
+    <ListItemText primary={song.name} secondary={song.artists.map((artist) => artist.name).join(", ")} />
   </ListItem>
 );
