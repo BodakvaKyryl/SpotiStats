@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { Container, Typography, List } from "@mui/material";
 import { SongItem } from "../elements/song";
-import { SpotifySong } from "@/types/song.type";
+import { SpotifySong } from "@/types";
 import { ErrorContainer, ProcessImage } from "../elements/error-container";
 
 const TopSongs = () => {

@@ -1,4 +1,4 @@
-import { Container, Alert, AlertColor, CircularProgress } from "@mui/material";
+import { Alert, AlertColor, CircularProgress } from "@mui/material";
 
 interface ErrorContainerProps {
   message: string | null;
@@ -7,23 +7,24 @@ interface ErrorContainerProps {
 
 interface ProcessImageProps {
   text?: string;
-  mt?: number;
+  className?: string;
 }
 
 export const ErrorContainer = ({ message, severity = "error" }: ErrorContainerProps) => {
   if (!message) return null;
 
   return (
-    <Container sx={{ mt: 4 }}>
+    <div className="container mx-auto mt-16">
       <Alert severity={severity}>{message}</Alert>
-    </Container>
+    </div>
   );
 };
 
-export const ProcessImage = ({ mt = 10 }: ProcessImageProps) => {
+export const ProcessImage = ({ text, className }: ProcessImageProps) => {
   return (
-    <Container sx={{ display: "flex", justifyContent: "center", mt }}>
+    <div className={`container mx-auto flex justify-center mt-10 ${className || ""}`}>
+      {text && <span className="mr-4 text-gray-500">{text}</span>}
       <CircularProgress />
-    </Container>
+    </div>
   );
 };

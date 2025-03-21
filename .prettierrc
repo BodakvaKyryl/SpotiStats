@@ -17,5 +17,7 @@
   "importOrderBuiltinModulesToTop": true,
   "importOrderParserPlugins": ["typescript", "jsx", "decorators-legacy"],
   "importOrderMergeDuplicateImports": true,
-  "importOrderCombineTypeAndValueImports": true
+  "importOrderCombineTypeAndValueImports": true,
+  "importOrderSeparateImportTypeGroups": true,
+  "plugins": ["prettier-plugin-tailwindcss"]
 }

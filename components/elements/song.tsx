@@ -1,25 +1,18 @@
-import { ListItem, ListItemAvatar, ListItemText, Avatar, Typography, Box } from "@mui/material";
+import { ListItem, ListItemAvatar, ListItemText, Avatar } from "@mui/material";
 import { formatDuration } from "@/utils/format";
-import { SongItemProps } from "@/types/song.type";
+import { SongItemProps } from "@/types";
 
 export const SongItem = ({ song }: SongItemProps) => (
   <ListItem>
     <ListItemAvatar>
-      <Avatar
-        alt={song.name}
-        src={song.album.images[0]?.url}
-        sx={{ width: 56, height: 56, marginRight: 2 }}
-        variant="square"
-      />
+      <Avatar alt={song.name} src={song.album.images[0]?.url} className="w-14 h-14 mr-4" variant="square" />
     </ListItemAvatar>
     <ListItemText
       primary={
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <Typography component="span">{song.name}</Typography>
-          <Typography component="span" variant="body2" color="text.secondary">
-            {formatDuration(song.duration_ms)}
-          </Typography>
-        </Box>
+        <div className="flex justify-between items-center">
+          <span>{song.name}</span>
+          <span className="text-sm text-gray-300">{formatDuration(song.duration_ms)}</span>
+        </div>
       }
       secondary={song.artists.map((artist) => artist.name).join(", ")}
     />

@@ -3,14 +3,13 @@
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import { SpotifyAlbum } from "@/types/album.type";
 import { ErrorContainer, ProcessImage } from "@/components/elements/error-container";
-import { AlbumItem } from "@/components";
-import { Limit, SpotifyTrackResponse, TimeRange } from "@/types";
+import { ArtistCard } from "@/components/elements/artist";
+import { Limit, TimeRange, SpotifyArtist } from "@/types";
 
-export default function Albums() {
+export default function Artists() {
   const { data: session, status } = useSession();
-  const [albums, setAlbums] = useState<SpotifyAlbum[]>([]);
+  const [artists, setArtists] = useState<SpotifyArtist[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [timeRange, setTimeRange] = useState<TimeRange>("short_term");
@@ -25,12 +24,12 @@ export default function Albums() {
   };
 
   useEffect(() => {
-    const fetchAlbums = async () => {
+    const fetchArtists = async () => {
       if (status === "authenticated" && session?.accessToken) {
         setLoading(true);
         try {
           const response = await fetch(
-            "https://api.spotify.com/v1/me/top/tracks?" +
+            "https://api.spotify.com/v1/me/top/artists?" +
               new URLSearchParams({
                 limit: limit,
                 time_range: timeRange,
@@ -46,38 +45,29 @@ export default function Albums() {
             throw new Error(`Failed to fetch: ${response.status}`);
           }
 
-          const data = (await response.json()) as SpotifyTrackResponse;
-          const uniqueAlbums = Array.from(
-            new Map(data.items.map((track) => [track.album.id, track.album])).values()
-          ) as SpotifyAlbum[];
-
-          setAlbums(uniqueAlbums);
+          const data = await response.json();
+          setArtists(data.items);
           setError(null);
         } catch (error) {
-          console.error("Error fetching albums:", error);
-          setError("Failed to load your albums. Please try again later.");
+          console.error("Error fetching artists:", error);
+          setError("Failed to load your artists. Please try again later.");
         } finally {
           setLoading(false);
         }
       }
     };
 
-    fetchAlbums();
+    fetchArtists();
   }, [session, status, timeRange, limit]);
 
-  if (loading) {
-    return <ProcessImage />;
-  }
-
-  if (error) {
-    return <ErrorContainer message={error} />;
-  }
+  if (loading) return <ProcessImage />;
+  if (error) return <ErrorContainer message={error} />;
 
   return (
     <div className="container mx-auto max-w-7xl py-16 px-4">
       <div className="flex flex-col space-y-16">
         <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-semibold">Top Albums</h1>
+          <h1 className="text-3xl font-semibold">Top Artists</h1>
 
           <div className="flex gap-4">
             <FormControl size="small">
@@ -100,9 +90,15 @@ export default function Albums() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {albums.map((album, index) => (
-            <AlbumItem key={album.id} album={album} position={index + 1} />
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+          {artists.map((artist, index) => (
+            <ArtistCard
+              key={artist.id}
+              artist={artist}
+              position={index + 1}
+              showGenres
+              onClick={() => console.log(`Clicked artist: ${artist.name}`)}
+            />
           ))}
         </div>
       </div>

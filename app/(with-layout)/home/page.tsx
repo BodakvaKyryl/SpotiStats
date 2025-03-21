@@ -1,10 +1,11 @@
 "use client";
 
-import { Box, CircularProgress, Container, Paper, Typography, Button } from "@mui/material";
+import { CircularProgress, Paper } from "@mui/material";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Image from "next/image";
+import { SpotifyButton } from "@/components";
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -19,75 +20,43 @@ export default function Home() {
     }
   }, [isAuthenticated, isLoading, router]);
 
-  if (isLoading) {
+  if (isLoading || !isAuthenticated) {
     return (
-      <Container sx={{ display: "flex", justifyContent: "center", mt: 10 }}>
+      <div className="container mx-auto flex justify-center mt-10">
         <CircularProgress />
-      </Container>
-    );
-  }
-
-  if (!isAuthenticated) {
-    return (
-      <Container sx={{ display: "flex", justifyContent: "center", mt: 10 }}>
-        <CircularProgress />
-      </Container>
+      </div>
     );
   }
 
   return (
-    <Container maxWidth="sm">
-      <Box
-        sx={{
-          mt: 10,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: 3,
-        }}>
-        <Paper
-          elevation={3}
-          sx={{
-            p: 4,
-            width: "100%",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}>
-          <Typography variant="h5" gutterBottom>
-            Welcome back, {session?.user?.name}
-          </Typography>
-          <Typography variant="body1" sx={{ mb: 2 }}>
-            You are now logged in with Spotify!
-          </Typography>
+    <div className="container mx-auto max-w-md">
+      <div className="mt-10 flex flex-col items-center space-y-8">
+        <Paper elevation={3} className="p-8 w-full flex flex-col items-center">
+          <h1 className="text-2xl font-semibold mb-4">Welcome back, {session?.user?.name}</h1>
+          <p className="text-base mb-4">You are now logged in with Spotify!</p>
 
           {session?.user?.image && (
-            <Box
-              sx={{
-                mb: 3,
-                position: "relative",
-                width: "100px",
-                height: "100px",
-              }}>
+            <div className="mb-6 relative w-[100px] h-[100px]">
               <Image
                 src={session.user.image}
                 alt="Profile"
                 fill
-                style={{
-                  borderRadius: "50%",
-                  objectFit: "cover",
-                }}
+                className="rounded-full object-cover"
                 sizes="100px"
                 priority
               />
-            </Box>
+            </div>
           )}
 
-          <Button variant="contained" color="primary" onClick={() => signOut({ callbackUrl: "/" })} sx={{ mt: 2 }}>
+          <SpotifyButton
+            variant="contained"
+            color="primary"
+            onClick={() => signOut({ callbackUrl: "/" })}
+            sx={{ mt: 2 }}>
             Log Out
-          </Button>
+          </SpotifyButton>
         </Paper>
-      </Box>
-    </Container>
+      </div>
+    </div>
   );
 }
