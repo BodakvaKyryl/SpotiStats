@@ -1,10 +1,11 @@
 "use client";
 
-import { Box, FormControl, InputLabel, MenuItem, Paper, Select, SelectChangeEvent } from "@mui/material";
+import { Box, Paper, SelectChangeEvent } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { ErrorContainer, ProcessImage } from "@/components/elements/error-container";
 import { SongItem } from "@/components/elements/song";
+import { TimeRangeSelector } from "@/components/elements/shared/time-range-selector";
 import { Limit, TimeRange, SpotifySong } from "@/types";
 
 export default function Songs() {
@@ -69,33 +70,19 @@ export default function Songs() {
   }
 
   return (
-    <div className="container mx-auto max-w-3xl py-16 px-4">
+    <div className="container mx-auto max-w-3xl px-4 py-16">
       <div className="flex flex-col space-y-16">
-        <div className="flex justify-between items-center">
+        <div className="flex items-center justify-between">
           <h1 className="text-3xl font-semibold">Top Tracks</h1>
-
-          <div className="flex gap-4">
-            <FormControl size="small">
-              <InputLabel>Time Range</InputLabel>
-              <Select value={timeRange} label="Time Range" onChange={handleTimeRangeChange} className="min-w-[150px]">
-                <MenuItem value="short_term">Last 4 Weeks</MenuItem>
-                <MenuItem value="medium_term">Last 6 Months</MenuItem>
-                <MenuItem value="long_term">All Time</MenuItem>
-              </Select>
-            </FormControl>
-
-            <FormControl size="small">
-              <InputLabel>Limit</InputLabel>
-              <Select value={limit} label="Limit" onChange={handleLimitChange} className="min-w-[100px]">
-                <MenuItem value="10">10</MenuItem>
-                <MenuItem value="20">20</MenuItem>
-                <MenuItem value="50">50</MenuItem>
-              </Select>
-            </FormControl>
-          </div>
+          <TimeRangeSelector
+            timeRange={timeRange}
+            limit={limit}
+            onTimeRangeChange={handleTimeRangeChange}
+            onLimitChange={handleLimitChange}
+          />
         </div>
 
-        <Paper elevation={0} variant="outlined" className="overflow-hidden rounded-md bg-background">
+        <Paper elevation={0} variant="outlined" className="bg-background overflow-hidden rounded-md">
           {songs.map((song, index) => (
             <Box
               key={song.id}
