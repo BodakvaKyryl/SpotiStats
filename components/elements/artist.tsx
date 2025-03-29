@@ -1,6 +1,6 @@
 import { Box, Card, CardContent, Typography, alpha, styled } from "@mui/material";
 import Image from "next/image";
-import { ArtistItemProps } from "@/types/artist.type";
+import { ArtistItemProps } from "@/types";
 
 const StyledCard = styled(Card)(({ theme }) => ({
   height: "100%",

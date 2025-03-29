@@ -1,10 +1,5 @@
+import { AlbumItemProps } from "@/types";
 import { Card, CardContent, CardMedia, Typography } from "@mui/material";
-import { SpotifyAlbum } from "@/types/album.type";
-
-interface AlbumItemProps {
-  album: SpotifyAlbum;
-  position?: number;
-}
 
 export const AlbumItem = ({ album, position }: AlbumItemProps) => (
   <Card
