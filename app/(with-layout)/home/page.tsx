@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import { ErrorContainer, ProcessImage } from "@/components/elements/error-container";
 import { SongItem } from "@/components/elements/song";
 import { SpotifyRecentlyPlayed } from "@/types";
-import ListeningStats from "@/components/elements/listening-stats";
 
 export default function Home() {
   const { data: session, status } = useSession();

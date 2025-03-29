@@ -133,6 +133,7 @@ export const Navbar = () => {
     { href: "/songs", label: "Songs" },
     { href: "/albums", label: "Albums" },
     { href: "/artists", label: "Artists" },
+    { href: "/genres", label: "Genres" },
   ];
 
   return (
@@ -141,14 +142,12 @@ export const Navbar = () => {
         <Typography
           variant="h5"
           component={Link}
-          href="/"
+          href=""
           sx={{
             fontWeight: 600,
             color: theme.palette.primary.main,
             textDecoration: "none",
-            "&:hover": {
-              color: theme.palette.primary.dark,
-            },
+            cursor: "default",
           }}>
           SpotiStats
         </Typography>
