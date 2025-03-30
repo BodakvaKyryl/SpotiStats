@@ -16,7 +16,7 @@ export const ArtistCard = ({ artist, position, showGenres = true, onClick }: Art
         component="h3"
         sx={{
           fontWeight: 600,
-          mb: 0.5,
+          mb: showGenres ? 0.5 : 0,
           overflow: "hidden",
           textOverflow: "ellipsis",
           display: "-webkit-box",
@@ -25,19 +25,19 @@ export const ArtistCard = ({ artist, position, showGenres = true, onClick }: Art
         }}>
         {artist.name}
       </Typography>
-      {showGenres && artist.genres?.length > 0 && (
+
+      {showGenres && artist.genres.length > 0 && (
         <Typography
           variant="body2"
           color="text.secondary"
           sx={{
-            fontSize: "small",
             overflow: "hidden",
             textOverflow: "ellipsis",
             display: "-webkit-box",
             WebkitLineClamp: 4,
             WebkitBoxOrient: "vertical",
           }}>
-          {artist.genres.slice(0, 5).join(" • ")}
+          {artist.genres.slice(0, 3).join(" • ")}
         </Typography>
       )}
     </CardContent>
