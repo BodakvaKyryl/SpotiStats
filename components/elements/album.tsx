@@ -25,21 +25,19 @@ export const AlbumItem = ({ album, position, onClick }: AlbumItemProps) => (
         }}>
         {album.name}
       </Typography>
-      {album.artists && (
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{
-            fontSize: "small",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
-          }}>
-          {album.artists.map((artist) => artist.name).join(" • ")}
-        </Typography>
-      )}
+
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        sx={{
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          display: "-webkit-box",
+          WebkitLineClamp: 1,
+          WebkitBoxOrient: "vertical",
+        }}>
+        {album.artists.map((artist) => artist.name).join(", ")}
+      </Typography>
     </CardContent>
   </StyledCard>
 );

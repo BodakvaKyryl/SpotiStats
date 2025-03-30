@@ -21,7 +21,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
-import { LogoutButton, SpotifyButton } from "../elements/button";
+import { LogoutButton, SpotifyButton } from "@/components";
 import { colors } from "@/styles/colors";
 import { useState } from "react";
 
