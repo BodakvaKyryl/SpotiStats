@@ -5,11 +5,11 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { ErrorContainer, ProcessImage } from "@/components/elements/error-container";
 import { SongItem } from "@/components/elements/song";
-import { SpotifyRecentlyPlayed } from "@/types";
+import { RecentlyPlayedSong } from "@/types";
 
 export default function Home() {
   const { data: session, status } = useSession();
-  const [recentTracks, setRecentTracks] = useState<SpotifyRecentlyPlayed[]>([]);
+  const [recentTracks, setRecentTracks] = useState<RecentlyPlayedSong[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -55,11 +55,6 @@ export default function Home() {
   return (
     <div className="container mx-auto max-w-3xl px-4 py-16">
       <div className="flex flex-col space-y-16">
-        {/* <div>
-          <h1 className="mb-8 text-3xl font-semibold">Listening Stats</h1>
-          <ListeningStats />
-        </div> */}
-
         <div>
           <h1 className="mb-8 text-3xl font-semibold">Recently Played</h1>
           <Paper elevation={0} variant="outlined" className="bg-background overflow-hidden rounded-md">

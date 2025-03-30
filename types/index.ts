@@ -5,3 +5,4 @@ export * from "./image.type";
 export * from "./song.type";
 export * from "./recently-played.type";
 export * from "./listening-stats.type";
+export * from "./top-data.type";

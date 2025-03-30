@@ -1,6 +1,6 @@
 import { SpotifySong } from ".";
 
-export interface SpotifyRecentlyPlayed {
+export interface RecentlyPlayedSong {
   track: SpotifySong;
   played_at: string;
   context: {
