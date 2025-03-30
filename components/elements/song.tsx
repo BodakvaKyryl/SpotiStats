@@ -5,11 +5,11 @@ import { SongItemProps } from "@/types";
 export const SongItem = ({ song }: SongItemProps) => (
   <ListItem>
     <ListItemAvatar>
-      <Avatar alt={song.name} src={song.album.images[0]?.url} className="w-14 h-14 mr-4" variant="square" />
+      <Avatar alt={song.name} src={song.album.images[0]?.url} className="mr-4 h-14 w-14" variant="square" />
     </ListItemAvatar>
     <ListItemText
       primary={
-        <div className="flex justify-between items-center">
+        <div className="flex items-center justify-between">
           <span>{song.name}</span>
           <span className="text-sm text-gray-300">{formatDuration(song.duration_ms)}</span>
         </div>

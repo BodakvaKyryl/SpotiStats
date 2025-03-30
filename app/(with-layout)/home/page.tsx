@@ -1,61 +1,77 @@
 "use client";
 
-import { CircularProgress, Paper } from "@mui/material";
-import { useSession, signOut } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import Image from "next/image";
-import { SpotifyButton } from "@/components";
+import { Box, Paper } from "@mui/material";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { ErrorContainer, ProcessImage } from "@/components/elements/error-container";
+import { SongItem } from "@/components/elements/song";
+import { RecentlyPlayedSong } from "@/types";
 
 export default function Home() {
   const { data: session, status } = useSession();
-  const router = useRouter();
-  const isLoading = status === "loading";
-  const isAuthenticated = status === "authenticated";
+  const [recentTracks, setRecentTracks] = useState<RecentlyPlayedSong[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      console.log("Home page: Not authenticated, redirecting to login");
-      router.push("/login");
-    }
-  }, [isAuthenticated, isLoading, router]);
+    const fetchRecentlyPlayed = async () => {
+      if (status === "authenticated" && session?.accessToken) {
+        setLoading(true);
+        try {
+          const response = await fetch(
+            "https://api.spotify.com/v1/me/player/recently-played?" +
+              new URLSearchParams({
+                limit: "50",
+              }).toString(),
+            {
+              headers: {
+                Authorization: `Bearer ${session.accessToken}`,
+              },
+            }
+          );
 
-  if (isLoading || !isAuthenticated) {
-    return (
-      <div className="container mx-auto flex justify-center mt-10">
-        <CircularProgress />
-      </div>
-    );
-  }
+          if (!response.ok) {
+            throw new Error(`Failed to fetch: ${response.status}`);
+          }
+
+          const data = await response.json();
+          setRecentTracks(data.items);
+          setError(null);
+        } catch (error) {
+          console.error("Error fetching recently played:", error);
+          setError("Failed to load your recently played tracks. Please try again later.");
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchRecentlyPlayed();
+  }, [session, status]);
+
+  if (loading) return <ProcessImage />;
+  if (error) return <ErrorContainer message={error} />;
 
   return (
-    <div className="container mx-auto max-w-md">
-      <div className="mt-10 flex flex-col items-center space-y-8">
-        <Paper elevation={3} className="p-8 w-full flex flex-col items-center">
-          <h1 className="text-2xl font-semibold mb-4">Welcome back, {session?.user?.name}</h1>
-          <p className="text-base mb-4">You are now logged in with Spotify!</p>
-
-          {session?.user?.image && (
-            <div className="mb-6 relative w-[100px] h-[100px]">
-              <Image
-                src={session.user.image}
-                alt="Profile"
-                fill
-                className="rounded-full object-cover"
-                sizes="100px"
-                priority
-              />
-            </div>
-          )}
-
-          <SpotifyButton
-            variant="contained"
-            color="primary"
-            onClick={() => signOut({ callbackUrl: "/" })}
-            sx={{ mt: 2 }}>
-            Log Out
-          </SpotifyButton>
-        </Paper>
+    <div className="container mx-auto max-w-3xl px-4 py-16">
+      <div className="flex flex-col space-y-16">
+        <div>
+          <h1 className="mb-8 text-3xl font-semibold">Recently Played</h1>
+          <Paper elevation={0} variant="outlined" className="bg-background overflow-hidden rounded-md">
+            {recentTracks.map((item, index) => (
+              <Box
+                key={`${item.track.id}-${item.played_at}`}
+                sx={{
+                  "&:not(:last-child)": {
+                    borderBottom: 1,
+                    borderColor: "divider",
+                  },
+                }}>
+                <SongItem song={item.track} position={index + 1} />
+              </Box>
+            ))}
+          </Paper>
+        </div>
       </div>
     </div>
   );

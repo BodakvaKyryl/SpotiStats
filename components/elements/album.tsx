@@ -1,56 +1,45 @@
-import { Card, CardContent, CardMedia, Typography } from "@mui/material";
-import { SpotifyAlbum } from "@/types/album.type";
+import { AlbumItemProps } from "@/types";
+import { CardContent, Typography } from "@mui/material";
+import { StyledCard, PositionBadge, ImageContainer, MediaImage } from "./shared/media-card";
 
-interface AlbumItemProps {
-  album: SpotifyAlbum;
-  position?: number;
-}
+export const AlbumItem = ({ album, position, onClick }: AlbumItemProps) => (
+  <StyledCard elevation={0} variant="outlined" onClick={onClick}>
+    {position && <PositionBadge>{position}</PositionBadge>}
 
-export const AlbumItem = ({ album, position }: AlbumItemProps) => (
-  <Card
-    elevation={4}
-    sx={{
-      height: "100%",
-      display: "flex",
-      flexDirection: "column",
-      position: "relative",
-      "&:hover": {
-        bgcolor: "action.hover",
-      },
-    }}>
-    {position && (
+    <ImageContainer>
+      <MediaImage src={album.images[0]?.url} alt={album.name} className="album-image" />
+    </ImageContainer>
+
+    <CardContent sx={{ textAlign: "center", p: 0, flexGrow: 1 }}>
       <Typography
-        variant="body2"
+        variant="subtitle1"
+        component="h3"
         sx={{
-          position: "absolute",
-          top: 8,
-          left: 8,
-          bgcolor: "rgba(0, 0, 0, 0.6)",
-          color: "white",
-          width: 24,
-          height: 24,
-          borderRadius: "50%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontWeight: "medium",
+          fontWeight: 600,
+          mb: 0.5,
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          display: "-webkit-box",
+          WebkitLineClamp: 1,
+          WebkitBoxOrient: "vertical",
         }}>
-        {position}
-      </Typography>
-    )}
-    <CardMedia
-      component="img"
-      image={album.images[0]?.url}
-      alt={album.name}
-      sx={{
-        aspectRatio: "1",
-        objectFit: "cover",
-      }}
-    />
-    <CardContent>
-      <Typography variant="subtitle1" component="div">
         {album.name}
       </Typography>
+      {album.artists && (
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{
+            fontSize: "small",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+          }}>
+          {album.artists.map((artist) => artist.name).join(" • ")}
+        </Typography>
+      )}
     </CardContent>
-  </Card>
+  </StyledCard>
 );

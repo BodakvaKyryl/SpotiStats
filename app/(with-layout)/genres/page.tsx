@@ -1,16 +1,22 @@
 "use client";
 
-import { Box, Paper, SelectChangeEvent } from "@mui/material";
+import { SelectChangeEvent } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { ErrorContainer, ProcessImage } from "@/components/elements/error-container";
-import { SongItem } from "@/components/elements/song";
 import { TimeRangeSelector } from "@/components/elements/shared/time-range-selector";
-import { Limit, TimeRange, SpotifySong } from "@/types";
+import { Limit, SpotifyArtist, TimeRange } from "@/types";
+import { GenreCard } from "@/components/elements/genre";
 
-export default function Songs() {
+interface GenreCount {
+  name: string;
+  count: number;
+  artists: string[];
+}
+
+export default function Genres() {
   const { data: session, status } = useSession();
-  const [songs, setSongs] = useState<SpotifySong[]>([]);
+  const [genres, setGenres] = useState<GenreCount[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [timeRange, setTimeRange] = useState<TimeRange>("short_term");
@@ -25,12 +31,12 @@ export default function Songs() {
   };
 
   useEffect(() => {
-    const fetchSongs = async () => {
+    const fetchGenres = async () => {
       if (status === "authenticated" && session?.accessToken) {
         setLoading(true);
         try {
           const response = await fetch(
-            "https://api.spotify.com/v1/me/top/tracks?" +
+            "https://api.spotify.com/v1/me/top/artists?" +
               new URLSearchParams({
                 limit: limit,
                 time_range: timeRange,
@@ -47,33 +53,49 @@ export default function Songs() {
           }
 
           const data = await response.json();
-          setSongs(data.items);
+
+          const genreMap = new Map<string, { count: number; artists: string[] }>();
+
+          data.items.forEach((artist: SpotifyArtist) => {
+            artist.genres.forEach((genre: string) => {
+              const current = genreMap.get(genre) || { count: 0, artists: [] };
+              genreMap.set(genre, {
+                count: current.count + 1,
+                artists: [...current.artists, artist.name].slice(0, 4),
+              });
+            });
+          });
+
+          const sortedGenres = Array.from(genreMap.entries())
+            .map(([name, { count, artists }]) => ({
+              name,
+              count,
+              artists,
+            }))
+            .sort((a, b) => b.count - a.count);
+
+          setGenres(sortedGenres);
           setError(null);
         } catch (error) {
-          console.error("Error fetching songs:", error);
-          setError("Failed to load your songs. Please try again later.");
+          console.error("Error fetching genres:", error);
+          setError("Failed to load your favorite genres. Please try again later.");
         } finally {
           setLoading(false);
         }
       }
     };
 
-    fetchSongs();
+    fetchGenres();
   }, [session, status, timeRange, limit]);
 
-  if (loading) {
-    return <ProcessImage />;
-  }
-
-  if (error) {
-    return <ErrorContainer message={error} />;
-  }
+  if (loading) return <ProcessImage />;
+  if (error) return <ErrorContainer message={error} />;
 
   return (
-    <div className="container mx-auto max-w-3xl px-4 py-16">
+    <div className="container mx-auto max-w-7xl px-4 py-16">
       <div className="flex flex-col space-y-16">
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-semibold">Top Tracks</h1>
+          <h1 className="text-3xl font-semibold">Top Genres</h1>
           <TimeRangeSelector
             timeRange={timeRange}
             limit={limit}
@@ -82,20 +104,11 @@ export default function Songs() {
           />
         </div>
 
-        <Paper elevation={0} variant="outlined" className="bg-background overflow-hidden rounded-md">
-          {songs.map((song, index) => (
-            <Box
-              key={song.id}
-              sx={{
-                "&:not(:last-child)": {
-                  borderBottom: 1,
-                  borderColor: "divider",
-                },
-              }}>
-              <SongItem song={song} position={index + 1} />
-            </Box>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {genres.map((genre, index) => (
+            <GenreCard key={genre.name} genre={genre} position={index + 1} />
           ))}
-        </Paper>
+        </div>
       </div>
     </div>
   );
