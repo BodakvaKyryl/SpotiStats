@@ -3,7 +3,7 @@
 import useSWR from "swr";
 import useSWRImmutable from "swr/immutable";
 import { useSession } from "next-auth/react";
-import { TimeRange, Limit, SpotifySong, RecentlyPlayedResponse } from "@/types";
+import { TimeRange, Limit, SpotifySong, RecentlyPlayedResponse, SpotifyAlbum } from "@/types";
 import { spotifyFetcher } from "@/utils/fetcher";
 
 export function useTopSongs(timeRange: TimeRange, limit: Limit) {
@@ -22,6 +22,7 @@ export function useTopSongs(timeRange: TimeRange, limit: Limit) {
 
 export function useTopAlbums(timeRange: TimeRange, limit: Limit) {
   const { data: session } = useSession();
+
   const {
     data: tracksData,
     error: tracksError,
@@ -40,21 +41,52 @@ export function useTopAlbums(timeRange: TimeRange, limit: Limit) {
     ? Array.from(new Set(tracksData.items.map((track: SpotifySong) => track.album.id)))
     : [];
 
-  const {
-    data: albumsData,
-    error: albumsError,
-    isLoading: albumsLoading,
-  } = useSWR(
-    albumIds.length > 0 && session?.accessToken
+  const chunkedAlbumIds = albumIds.reduce<string[][]>((acc, id, i) => {
+    const chunkIndex = Math.floor(i / 20);
+    if (!acc[chunkIndex]) acc[chunkIndex] = [];
+    acc[chunkIndex].push(id);
+    return acc;
+  }, []);
+
+  const chunk0 = useSWRImmutable(
+    chunkedAlbumIds[0]?.length > 0 && session?.accessToken
       ? `https://api.spotify.com/v1/albums?${new URLSearchParams({
-          ids: albumIds.join(","),
+          ids: chunkedAlbumIds[0].join(","),
         })}`
       : null,
     spotifyFetcher(session)
   );
 
+  const chunk1 = useSWRImmutable(
+    chunkedAlbumIds[1]?.length > 0 && session?.accessToken
+      ? `https://api.spotify.com/v1/albums?${new URLSearchParams({
+          ids: chunkedAlbumIds[1].join(","),
+        })}`
+      : null,
+    spotifyFetcher(session)
+  );
+
+  const chunk2 = useSWRImmutable(
+    chunkedAlbumIds[2]?.length > 0 && session?.accessToken
+      ? `https://api.spotify.com/v1/albums?${new URLSearchParams({
+          ids: chunkedAlbumIds[2].join(","),
+        })}`
+      : null,
+    spotifyFetcher(session)
+  );
+
+  const albumRequests = [chunk0, chunk1, chunk2].filter(Boolean);
+  const albumsError = albumRequests.find((req) => req.error)?.error;
+  const albumsLoading = albumRequests.some((req) => req.isLoading);
+  const albumsData = albumRequests.reduce<SpotifyAlbum[]>((acc, req) => {
+    if (req.data?.albums) {
+      return [...acc, ...req.data.albums];
+    }
+    return acc;
+  }, []);
+
   return {
-    data: albumsData?.albums || [],
+    data: albumsData,
     error: tracksError || albumsError,
     isLoading: tracksLoading || albumsLoading,
   };

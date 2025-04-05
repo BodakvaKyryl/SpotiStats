@@ -3,7 +3,7 @@
 import { SelectChangeEvent } from "@mui/material";
 import { useState } from "react";
 import { AlbumItem, TimeRangeSelector, ErrorContainer, ProcessImage } from "@/components";
-import { Limit, TimeRange } from "@/types";
+import { Limit, SpotifyAlbum, TimeRange } from "@/types";
 import { useTopAlbums } from "@/hooks/useSpotifyData";
 
 export default function Albums() {
@@ -36,8 +36,11 @@ export default function Albums() {
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-6 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4">
-          {albums?.map((album, index) => <AlbumItem key={album.id} album={album} position={index + 1} />)}
+        <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
+          {albums?.map((album: SpotifyAlbum, index: number) => {
+            console.log(`Rendering album ${index + 1}:`, album.name);
+            return <AlbumItem key={album.id} album={album} position={index + 1} />;
+          })}
         </div>
       </div>
     </div>
