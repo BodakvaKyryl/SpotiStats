@@ -13,7 +13,7 @@ export const CurrentlyPlaying = () => {
     error,
   } = useAuthSWR<typeof SpotifyService.getCurrentlyPlaying>(SpotifyService.getCurrentlyPlaying, undefined, {
     revalidateOnFocus: true,
-    refreshInterval: 1000,
+    refreshInterval: 10000,
     revalidateOnReconnect: true,
     refreshWhenHidden: false,
   });
