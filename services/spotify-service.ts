@@ -57,6 +57,11 @@ export const SpotifyService = {
     const url = "/me";
     return fetchData(url, { accessToken });
   },
+  getCurrentlyPlaying: async (accessToken: string) => {
+    const url = "/me/player/currently-playing";
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return fetchData<Record<string, any>>(url, { accessToken });
+  },
 
   // TODO: check if accessToken is needed
 

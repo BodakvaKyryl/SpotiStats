@@ -1,25 +1,32 @@
 "use client";
 
 import { Paper, Typography, Box, LinearProgress } from "@mui/material";
-import { useNowPlaying } from "@/hooks/useSpotifyData";
+import { useAuthSWR } from "@/hooks/useSpotifyData";
 import { ProcessImage, SongItem } from "@/components";
 import { formatDuration } from "@/utils/format";
 import { useState, useEffect } from "react";
+import { SpotifyService } from "@/services";
 
 export const CurrentlyPlaying = () => {
-  const { data, isLoading, isEmpty } = useNowPlaying();
-  const [isVisible, setIsVisible] = useState(false);
+  const {
+    data = {},
+    isLoading,
+    error,
+  } = useAuthSWR<typeof SpotifyService.getCurrentlyPlaying>(SpotifyService.getCurrentlyPlaying, undefined);
+
+  const isValidPlayback = Boolean(data?.is_playing && data?.item?.id && typeof data?.progress_ms === "number");
+  const isEmpty = !isValidPlayback || error?.status === 204 || error?.status === 404;
+  const isVisible = Boolean(!isEmpty && data?.item);
+
   const [notPlaying, setNotPlaying] = useState(false);
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
 
     if (!isEmpty && data?.item) {
-      setIsVisible(true);
       setNotPlaying(false);
     } else {
       timeoutId = setTimeout(() => {
-        setIsVisible(false);
         setNotPlaying(true);
       }, 500);
     }
@@ -32,6 +39,8 @@ export const CurrentlyPlaying = () => {
   }, [isEmpty, data]);
 
   if (isLoading) return <ProcessImage />;
+
+  if (!data?.item) return null;
 
   return (
     <div className={`fade-in-out transition-opacity duration-500`}>
