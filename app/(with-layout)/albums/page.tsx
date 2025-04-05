@@ -36,7 +36,7 @@ export default function Albums() {
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-cols-2 gap-6 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4">
           {albums?.map((album, index) => <AlbumItem key={album.id} album={album} position={index + 1} />)}
         </div>
       </div>

@@ -37,7 +37,7 @@ export default function Artists() {
           />
         </div>
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
           {data?.items?.map((artist: SpotifyArtist, index: number) => (
             <ArtistCard key={artist.id} artist={artist} position={index + 1} />
           ))}

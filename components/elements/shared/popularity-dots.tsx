@@ -16,7 +16,7 @@ export const PopularityDots = ({ popularity }: PopularityDotsProps) => {
   });
   return (
     <Tooltip title={`Popularity: ${popularity}%`} arrow placement="top">
-      <div className="flex cursor-help items-center gap-2">
+      <div className="mt-0.5 flex cursor-help items-center gap-2">
         <Typography variant="caption" color="text.secondary" sx={{ fontSize: "0.65rem" }}>
           {popularity}%
         </Typography>
