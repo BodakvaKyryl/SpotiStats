@@ -1,11 +1,12 @@
 "use client";
 
-import useSWR from "swr";
+import useSWR, { SWRConfiguration } from "swr";
 import useSWRImmutable from "swr/immutable";
 import { useSession } from "next-auth/react";
 import { TimeRange, Limit, SpotifySong, RecentlyPlayedResponse, SpotifyAlbum } from "@/types";
 import { spotifyFetcher } from "@/utils/fetcher";
 import { SpotifyService } from "@/services/spotify-service";
+import { useCallback, useMemo } from "react";
 
 export function useTopSongs(timeRange: TimeRange, limit: Limit) {
   const { data: session } = useSession();
@@ -146,12 +147,18 @@ export function useNowPlaying() {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const useAuthSWR = <T extends (...args: any[]) => unknown, ParamT = Parameters<T>[1]>(
   fetcher: T,
-  params: ParamT
+  params: ParamT,
+  options?: SWRConfiguration
 ) => {
   const { data: session } = useSession();
 
-  return useSWRImmutable(
-    session?.accessToken ? [fetcher.name, session.accessToken, params] : null,
-    () => fetcher(session.accessToken, params) as Awaited<ReturnType<T>>
-  );
+  const key = useMemo(() => {
+    if (!session?.accessToken) return null;
+    return [fetcher.name, session.accessToken, params];
+  }, [session?.accessToken, fetcher.name, params]);
+
+  return useSWR(key, () => fetcher(session?.accessToken, params) as Awaited<ReturnType<T>>, {
+    revalidateOnFocus: false,
+    ...options,
+  });
 };
