@@ -2,10 +2,9 @@
 
 import { SelectChangeEvent } from "@mui/material";
 import { useState } from "react";
-import { TimeRangeSelector } from "@/components/elements/shared/time-range-selector";
 import { Limit, SpotifyArtist, TimeRange } from "@/types";
 import { useTopArtists } from "@/hooks/useSpotifyData";
-import { ArtistCard, ErrorContainer, ProcessImage } from "@/components";
+import { ArtistCard, ErrorContainer, ProcessImage, TimeRangeSelector } from "@/components";
 
 export default function Artists() {
   const [timeRange, setTimeRange] = useState<TimeRange>("short_term");

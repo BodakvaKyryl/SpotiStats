@@ -1,7 +1,7 @@
 import { ListItem, ListItemAvatar, ListItemText, Avatar, Typography } from "@mui/material";
 import { formatDuration } from "@/utils/format";
 import { SongItemProps } from "@/types";
-import { PopularityDots } from "./shared/popularity-dots";
+import { PopularityDots } from "@/components";
 
 export const SongItem = ({ song }: SongItemProps) => (
   <ListItem className="transition-colors hover:bg-gray-50 dark:hover:bg-gray-900">

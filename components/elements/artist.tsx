@@ -1,7 +1,6 @@
 import { ArtistItemProps } from "@/types";
 import { CardContent, Typography } from "@mui/material";
-import { StyledCard, PositionBadge, ImageContainer, MediaImage } from "./shared/media-card";
-import { PopularityDots } from "./shared/popularity-dots";
+import { StyledCard, PositionBadge, ImageContainer, MediaImage, PopularityDots } from "@/components";
 
 export const ArtistCard = ({ artist, position, showGenres = true, onClick }: ArtistItemProps) => (
   <StyledCard elevation={0} variant="outlined" onClick={onClick}>

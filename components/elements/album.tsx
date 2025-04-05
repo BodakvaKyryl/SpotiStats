@@ -1,7 +1,7 @@
 import { AlbumItemProps } from "@/types";
 import { CardContent, Typography } from "@mui/material";
 import { StyledCard, PositionBadge, ImageContainer, MediaImage } from "./shared/media-card";
-import { PopularityDots } from "./shared/popularity-dots";
+import { PopularityDots } from "@/components";
 
 export const AlbumItem = ({ album, position, onClick }: AlbumItemProps) => (
   <StyledCard elevation={0} variant="outlined" onClick={onClick}>

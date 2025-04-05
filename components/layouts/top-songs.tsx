@@ -1,12 +1,13 @@
 "use client";
 
-import { Container, Typography, List } from "@mui/material";
-import { ErrorContainer, ProcessImage, SongItem } from "@/components";
+import { Typography, Box } from "@mui/material";
+import Link from "next/link";
 import { useTopSongs } from "@/hooks/useSpotifyData";
 import { SpotifySong } from "@/types";
+import { ErrorContainer, ProcessImage, TopSongItem, SpotifyButton, HorizontalScroll } from "@/components";
 
-const TopSongs = () => {
-  const { data, error, isLoading } = useTopSongs("long_term", "50");
+export const TopSongs = () => {
+  const { data, error, isLoading } = useTopSongs("short_term", "10");
 
   if (isLoading) {
     return <ProcessImage />;
@@ -17,13 +18,37 @@ const TopSongs = () => {
   }
 
   return (
-    <Container>
-      <Typography variant="h4" gutterBottom>
-        Your Top Songs
-      </Typography>
-      <List>{data?.items?.map((song: SpotifySong) => <SongItem key={song.id} song={song} />)}</List>
-    </Container>
+    <Box className="space-y-4">
+      <div className="flex items-center justify-between">
+        <Typography variant="h5" fontWeight={600}>
+          Top Songs
+        </Typography>
+        <Link href="/songs">
+          <SpotifyButton>Show All</SpotifyButton>
+        </Link>
+      </div>
+
+      <HorizontalScroll>
+        {data?.items?.map((song: SpotifySong) => (
+          <Box
+            key={song.id}
+            sx={{
+              minWidth: {
+                xs: "140px",
+                sm: "160px",
+                md: "180px",
+              },
+              maxWidth: {
+                xs: "140px",
+                sm: "160px",
+                md: "180px",
+              },
+              px: 1,
+            }}>
+            <TopSongItem song={song} />
+          </Box>
+        ))}
+      </HorizontalScroll>
+    </Box>
   );
 };
-
-export default TopSongs;

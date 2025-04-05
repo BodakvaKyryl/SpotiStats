@@ -5,6 +5,7 @@ import { useRecentlyPlayed, useCurrentPlayback } from "@/hooks/useSpotifyData";
 import { ProcessImage, ErrorContainer } from "@/components";
 import { formatDistanceToNow } from "date-fns";
 
+// not using
 export const ListeningStats = () => {
   const { data: recentlyPlayed, error: recentError, isLoading: recentLoading } = useRecentlyPlayed("50");
   const { data: currentTrack, error: currentError, isLoading: currentLoading } = useCurrentPlayback();

@@ -1,5 +1,5 @@
 import { CardContent, Typography } from "@mui/material";
-import { StyledCard, PositionBadge } from "./shared/media-card";
+import { StyledCard, PositionBadge } from "@/components";
 
 interface GenreCardProps {
   genre: {
