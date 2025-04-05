@@ -1,6 +1,7 @@
 import { AlbumItemProps } from "@/types";
 import { CardContent, Typography } from "@mui/material";
 import { StyledCard, PositionBadge, ImageContainer, MediaImage } from "./shared/media-card";
+import { PopularityDots } from "./shared/popularity-dots";
 
 export const AlbumItem = ({ album, position, onClick }: AlbumItemProps) => (
   <StyledCard elevation={0} variant="outlined" onClick={onClick}>
@@ -30,6 +31,7 @@ export const AlbumItem = ({ album, position, onClick }: AlbumItemProps) => (
         variant="body2"
         color="text.secondary"
         sx={{
+          mb: 1,
           overflow: "hidden",
           textOverflow: "ellipsis",
           display: "-webkit-box",
@@ -38,6 +40,10 @@ export const AlbumItem = ({ album, position, onClick }: AlbumItemProps) => (
         }}>
         {album.artists.map((artist) => artist.name).join(", ")}
       </Typography>
+
+      <div className="flex justify-center">
+        <PopularityDots popularity={album.popularity} />
+      </div>
     </CardContent>
   </StyledCard>
 );

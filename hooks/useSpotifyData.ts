@@ -3,7 +3,7 @@
 import useSWR from "swr";
 import useSWRImmutable from "swr/immutable";
 import { useSession } from "next-auth/react";
-import { TimeRange, Limit, SpotifyAlbum, SpotifySong, RecentlyPlayedResponse } from "@/types";
+import { TimeRange, Limit, SpotifySong, RecentlyPlayedResponse } from "@/types";
 import { spotifyFetcher } from "@/utils/fetcher";
 
 export function useTopSongs(timeRange: TimeRange, limit: Limit) {
@@ -24,8 +24,8 @@ export function useTopAlbums(timeRange: TimeRange, limit: Limit) {
   const { data: session } = useSession();
   const {
     data: tracksData,
-    error,
-    isLoading,
+    error: tracksError,
+    isLoading: tracksLoading,
   } = useSWR<{ items: SpotifySong[] }>(
     session?.accessToken
       ? `https://api.spotify.com/v1/me/top/tracks?${new URLSearchParams({
@@ -36,14 +36,27 @@ export function useTopAlbums(timeRange: TimeRange, limit: Limit) {
     spotifyFetcher(session)
   );
 
-  const albums: SpotifyAlbum[] = tracksData?.items
-    ? Array.from(new Map(tracksData.items.map((track) => [track.album.id, track.album])).values())
+  const albumIds = tracksData?.items
+    ? Array.from(new Set(tracksData.items.map((track: SpotifySong) => track.album.id)))
     : [];
 
+  const {
+    data: albumsData,
+    error: albumsError,
+    isLoading: albumsLoading,
+  } = useSWR(
+    albumIds.length > 0 && session?.accessToken
+      ? `https://api.spotify.com/v1/albums?${new URLSearchParams({
+          ids: albumIds.join(","),
+        })}`
+      : null,
+    spotifyFetcher(session)
+  );
+
   return {
-    data: albums,
-    error,
-    isLoading,
+    data: albumsData?.albums || [],
+    error: tracksError || albumsError,
+    isLoading: tracksLoading || albumsLoading,
   };
 }
 

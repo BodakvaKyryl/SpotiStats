@@ -5,6 +5,7 @@ export interface SpotifyAlbum {
   name: string;
   uri?: string;
   images: SpotifyImage[];
+  popularity?: number;
   artists: Array<{ name: string }>;
 }
 
