@@ -14,7 +14,6 @@ const fetchData = async <T>(
   const allParams = { ...restParams, ...timeRangeParam };
 
   const urlWithParams = buildUrl(url, new URLSearchParams(allParams));
-  console.log("urlWithParams", urlWithParams);
   const response = await fetch(urlWithParams, {
     method: "GET",
     headers: {

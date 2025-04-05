@@ -96,11 +96,9 @@ export function useTopAlbums(timeRange: TimeRange, limit: Limit) {
 export function useTopArtists(params: Parameters<typeof SpotifyService.getTopUserArtists>[1]) {
   const { data: session } = useSession();
 
-  return useSWRImmutable(session?.accessToken ? ["top-artists", session.accessToken, params] : null, async () => {
-    const res = await SpotifyService.getTopUserArtists(session.accessToken, params);
-    console.log("res", res);
-    return res;
-  });
+  return useSWRImmutable(session?.accessToken ? ["top-artists", session.accessToken, params] : null, () =>
+    SpotifyService.getTopUserArtists(session.accessToken, params)
+  );
 }
 
 export function useRecentlyPlayed(limit: Limit = "50") {
