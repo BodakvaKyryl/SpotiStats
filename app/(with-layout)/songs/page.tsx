@@ -3,14 +3,18 @@
 import { Box, Paper, SelectChangeEvent } from "@mui/material";
 import { useState } from "react";
 import { Limit, SpotifySong, TimeRange } from "@/types";
-import { useTopSongs } from "@/hooks/useSpotifyData";
+import { useAuthSWR } from "@/hooks/useSpotifyData";
 import { ProcessImage, ErrorContainer, TimeRangeSelector, SongItem } from "@/components";
+import { SpotifyService } from "@/services/spotify-service";
 
 export default function Songs() {
   const [timeRange, setTimeRange] = useState<TimeRange>("short_term");
   const [limit, setLimit] = useState<Limit>("20");
 
-  const { data, error, isLoading } = useTopSongs(timeRange, limit);
+  const { data, error, isLoading } = useAuthSWR<typeof SpotifyService.getTopUserSongs>(SpotifyService.getTopUserSongs, {
+    timeRange,
+    limit,
+  });
 
   const handleTimeRangeChange = (event: SelectChangeEvent) => {
     setTimeRange(event.target.value as TimeRange);

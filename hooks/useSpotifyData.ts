@@ -5,6 +5,7 @@ import useSWRImmutable from "swr/immutable";
 import { useSession } from "next-auth/react";
 import { TimeRange, Limit, SpotifySong, RecentlyPlayedResponse, SpotifyAlbum } from "@/types";
 import { spotifyFetcher } from "@/utils/fetcher";
+import { SpotifyService } from "@/services/spotify-service";
 
 export function useTopSongs(timeRange: TimeRange, limit: Limit) {
   const { data: session } = useSession();
@@ -14,6 +15,7 @@ export function useTopSongs(timeRange: TimeRange, limit: Limit) {
       ? `https://api.spotify.com/v1/me/top/tracks?${new URLSearchParams({
           limit,
           time_range: timeRange,
+          scope: "user-top-read",
         })}`
       : null,
     spotifyFetcher(session)
@@ -91,19 +93,14 @@ export function useTopAlbums(timeRange: TimeRange, limit: Limit) {
     isLoading: tracksLoading || albumsLoading,
   };
 }
-
-export function useTopArtists(timeRange: TimeRange, limit: Limit) {
+export function useTopArtists(params: Parameters<typeof SpotifyService.getTopUserArtists>[1]) {
   const { data: session } = useSession();
 
-  return useSWRImmutable(
-    session?.accessToken
-      ? `https://api.spotify.com/v1/me/top/artists?${new URLSearchParams({
-          limit,
-          time_range: timeRange,
-        })}`
-      : null,
-    spotifyFetcher(session)
-  );
+  return useSWRImmutable(session?.accessToken ? ["top-artists", session.accessToken, params] : null, async () => {
+    const res = await SpotifyService.getTopUserArtists(session.accessToken, params);
+    console.log("res", res);
+    return res;
+  });
 }
 
 export function useRecentlyPlayed(limit: Limit = "50") {
@@ -115,7 +112,8 @@ export function useRecentlyPlayed(limit: Limit = "50") {
           limit,
         })}`
       : null,
-    spotifyFetcher(session)
+    spotifyFetcher(session),
+    { onError: (error) => console.error("Error fetching top albums:", error) }
   );
 }
 
@@ -146,3 +144,16 @@ export function useNowPlaying() {
     isEmpty,
   };
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const useAuthSWR = <T extends (...args: any[]) => unknown, ParamT = Parameters<T>[1]>(
+  fetcher: T,
+  params: ParamT
+) => {
+  const { data: session } = useSession();
+
+  return useSWRImmutable(
+    session?.accessToken ? [fetcher.name, session.accessToken, params] : null,
+    () => fetcher(session.accessToken, params) as Awaited<ReturnType<T>>
+  );
+};

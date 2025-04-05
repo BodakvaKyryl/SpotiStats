@@ -2,12 +2,16 @@
 
 import { Typography, Box } from "@mui/material";
 import Link from "next/link";
-import { useTopSongs } from "@/hooks/useSpotifyData";
+import { useAuthSWR } from "@/hooks/useSpotifyData";
 import { SpotifySong } from "@/types";
 import { ErrorContainer, ProcessImage, TopSongItem, SpotifyButton, HorizontalScroll } from "@/components";
+import { SpotifyService } from "@/services/spotify-service";
 
 export const TopSongs = () => {
-  const { data, error, isLoading } = useTopSongs("short_term", "10");
+  const { data, error, isLoading } = useAuthSWR<typeof SpotifyService.getTopUserSongs>(SpotifyService.getTopUserSongs, {
+    timeRange: "short_term",
+    limit: "10",
+  });
 
   if (isLoading) {
     return <ProcessImage />;
