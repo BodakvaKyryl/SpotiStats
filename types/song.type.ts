@@ -9,6 +9,7 @@ export interface SpotifySong {
   uri: string;
   duration_ms: number;
   played_at?: string;
+  popularity?: number;
 }
 
 export interface SongItemProps {

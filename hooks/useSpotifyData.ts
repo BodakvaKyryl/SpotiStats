@@ -76,22 +76,28 @@ export function useRecentlyPlayed(limit: Limit = "50") {
 
 export function useNowPlaying() {
   const { data: session } = useSession();
+  const POLLING_INTERVAL = 3000;
 
   const { data, error } = useSWR(
     session?.accessToken ? "https://api.spotify.com/v1/me/player/currently-playing" : null,
     spotifyFetcher(session),
     {
-      refreshInterval: 1000,
+      refreshInterval: POLLING_INTERVAL,
       revalidateOnFocus: true,
       shouldRetryOnError: false,
       errorRetryCount: 2,
+      keepPreviousData: false,
     }
   );
+
+  const isValidPlayback = Boolean(data?.is_playing && data?.item?.id && typeof data?.progress_ms === "number");
+
+  const isEmpty = !isValidPlayback || error?.status === 204 || error?.status === 404;
 
   return {
     data,
     isLoading: !error && !data,
-    isError: error,
-    isEmpty: error?.status === 404 || !data,
+    isError: error && error.status !== 204 && error.status !== 404,
+    isEmpty,
   };
 }

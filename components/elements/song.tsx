@@ -1,6 +1,7 @@
 import { ListItem, ListItemAvatar, ListItemText, Avatar, Typography } from "@mui/material";
 import { formatDuration } from "@/utils/format";
 import { SongItemProps } from "@/types";
+import { PopularityDots } from "./shared/popularity-dots";
 
 export const SongItem = ({ song }: SongItemProps) => (
   <ListItem className="transition-colors hover:bg-gray-50 dark:hover:bg-gray-900">
@@ -25,9 +26,12 @@ export const SongItem = ({ song }: SongItemProps) => (
             </Typography>
           </div>
 
-          <Typography variant="body2" color="text.secondary">
-            {formatDuration(song.duration_ms)}
-          </Typography>
+          <div className="flex flex-col items-end gap-1">
+            <Typography variant="body2" color="text.secondary">
+              {formatDuration(song.duration_ms)}
+            </Typography>
+            <PopularityDots popularity={song.popularity} />
+          </div>
         </div>
       }
       secondary={
