@@ -10,6 +10,14 @@ export interface SpotifySong {
   duration_ms: number;
   played_at?: string;
   popularity?: number;
+  track_number: number;
+  explicit: boolean;
+  external_ids: string;
+  external_urls: string;
+  preview_url: string | null;
+  restrictions?: {
+    reason: string;
+  };
 }
 
 export interface SongItemProps {

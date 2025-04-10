@@ -1,6 +1,6 @@
 import { Paper, Box } from "@mui/material";
-import { useRecentlyPlayed } from "@/hooks/useSpotifyData";
 import { ProcessImage, ErrorContainer, RecentlyPlayedItem } from "@/components";
+import { useRecentlyPlayed } from "@/hooks/useSpotifyData";
 
 export const RecentlyPlayed = () => {
   const { data, error, isLoading } = useRecentlyPlayed("50");

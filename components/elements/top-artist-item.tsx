@@ -3,7 +3,7 @@ import { ArtistItemProps } from "@/types";
 import { PopularityDots } from "@/components";
 
 export const TopArtistItem = ({ artist }: ArtistItemProps) => (
-  <Box className="flex flex-col gap-2 p-2 transition-colors hover:bg-gray-50 dark:hover:bg-gray-900">
+  <Box className="flex flex-col gap-2 p-2 transition-colors hover:bg-gray-50 dark:hover:bg-neutral-900">
     <Avatar
       alt={artist.name}
       src={artist.images[0]?.url}

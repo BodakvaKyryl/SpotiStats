@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import { TimeRange, Limit, SpotifySong, RecentlyPlayedResponse, SpotifyAlbum } from "@/types";
 import { spotifyFetcher } from "@/utils/fetcher";
 import { SpotifyService } from "@/services/spotify-service";
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 
 export function useTopSongs(timeRange: TimeRange, limit: Limit) {
   const { data: session } = useSession();
