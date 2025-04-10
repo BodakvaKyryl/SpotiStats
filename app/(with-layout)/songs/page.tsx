@@ -28,7 +28,7 @@ export default function Songs() {
   if (error) return <ErrorContainer message="Failed to load your top songs. Please try again later." />;
 
   return (
-    <div className="container mx-auto max-w-3xl px-4 py-16">
+    <div className="container mx-auto max-w-5xl px-4 py-16">
       <div className="flex flex-col space-y-16">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-semibold">Top Songs</h1>

@@ -1,6 +1,6 @@
 "use client";
 
-import { Typography, Box } from "@mui/material";
+import { Box } from "@mui/material";
 import Link from "next/link";
 import { useAuthSWR } from "@/hooks/useSpotifyData";
 import { SpotifySong } from "@/types";
@@ -22,37 +22,36 @@ export const TopSongs = () => {
   }
 
   return (
-    <Box className="space-y-4">
+    <>
       <div className="flex items-center justify-between">
-        <Typography variant="h5" fontWeight={600}>
-          Top Songs
-        </Typography>
+        <h1 className="text-3xl font-semibold">Top songs</h1>
         <Link href="/songs">
           <SpotifyButton>Show All</SpotifyButton>
         </Link>
       </div>
-
-      <HorizontalScroll>
-        {data?.items?.map((song: SpotifySong) => (
-          <Box
-            key={song.id}
-            sx={{
-              minWidth: {
-                xs: "140px",
-                sm: "160px",
-                md: "180px",
-              },
-              maxWidth: {
-                xs: "140px",
-                sm: "160px",
-                md: "180px",
-              },
-              px: 1,
-            }}>
-            <TopSongItem song={song} />
-          </Box>
-        ))}
-      </HorizontalScroll>
-    </Box>
+      <Box className="space-y-4">
+        <HorizontalScroll>
+          {data?.items?.map((song: SpotifySong) => (
+            <Box
+              key={song.id}
+              sx={{
+                minWidth: {
+                  xs: "140px",
+                  sm: "160px",
+                  md: "180px",
+                },
+                maxWidth: {
+                  xs: "140px",
+                  sm: "160px",
+                  md: "180px",
+                },
+                px: 1,
+              }}>
+              <TopSongItem song={song} />
+            </Box>
+          ))}
+        </HorizontalScroll>
+      </Box>
+    </>
   );
 };

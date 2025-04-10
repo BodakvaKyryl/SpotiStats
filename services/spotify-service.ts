@@ -37,26 +37,32 @@ export const SpotifyService = {
       params: { ...params, scope: "user-top-read" },
     });
   },
+
   getTopUserAlbums: async (accessToken: string, params: { timeRange: TimeRange; limit: Limit }) => {
     const url = "/me/top/albums";
     return fetchData<{ items: SpotifyAlbum[] }>(url, { accessToken, params });
   },
+
   getTopUserArtists: async (accessToken: string, params: { timeRange: TimeRange; limit: Limit }) => {
     const url = "/me/top/artists";
     return fetchData<{ items: SpotifyArtist[] }>(url, { accessToken, params });
   },
+
   getRecentlyPlayed: async (accessToken: string, params: { limit: Limit }) => {
     const url = "/me/player/recently-played";
     return fetchData<RecentlyPlayedResponse>(url, { accessToken, params });
   },
+
   getUserPlaylists: async (accessToken: string, params: { limit: Limit }) => {
     const url = "/me/playlists";
     return fetchData(url, { accessToken, params });
   },
+
   getUserProfile: async (accessToken: string) => {
     const url = "/me";
     return fetchData(url, { accessToken });
   },
+
   getCurrentlyPlaying: async (accessToken: string) => {
     const url = "/me/player/currently-playing";
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -70,50 +76,60 @@ export const SpotifyService = {
     const url = `/playlists/${playlistId}/tracks`;
     return fetchData(url, { accessToken, params: restParams });
   },
+
   getPlaylist: async (accessToken: string, params: { playlistId: string }) => {
     const { playlistId } = params;
     const url = `/playlists/${playlistId}`;
     return fetchData(url, { accessToken });
   },
+
   getAlbum: async (accessToken: string, params: { albumId: string }) => {
     const { albumId } = params;
     const url = `/albums/${albumId}`;
     return fetchData(url, { accessToken });
   },
+
   getTrack: async (accessToken: string, params: { trackId: string }) => {
     const { trackId } = params;
     const url = `/tracks/${trackId}`;
     return fetchData(url, { accessToken });
   },
+
   getArtist: async (accessToken: string, params: { artistId: string }) => {
     const { artistId } = params;
     const url = `/artists/${artistId}`;
     return fetchData(url, { accessToken });
   },
+
   getArtistTopTracks: async (accessToken: string, params: { artistId: string; market: string }) => {
     const { artistId, ...restParams } = params;
     const url = `/artists/${artistId}/top-tracks`;
     return fetchData(url, { accessToken, params: restParams });
   },
+
   getArtistAlbums: async (accessToken: string, params: { artistId: string; limit: Limit }) => {
     const { artistId, ...restParams } = params;
     const url = `/artists/${artistId}/albums`;
     return fetchData(url, { accessToken, params: restParams });
   },
+
   getArtistRelatedArtists: async (accessToken: string, params: { artistId: string }) => {
     const { artistId } = params;
     const url = `/artists/${artistId}/related-artists`;
     return fetchData(url, { accessToken });
   },
+
   getSearchResults: async (accessToken: string, params: { query: string; type: string; limit: Limit }) => {
     const url = "/search";
     return fetchData(url, { accessToken, params });
   },
+
   getAudioFeatures: async (accessToken: string, params: { trackId: string }) => {
     const { trackId } = params;
     const url = `/audio-features/${trackId}`;
     return fetchData(url, { accessToken });
   },
+
   getAudioAnalysis: async (accessToken: string, params: { trackId: string }) => {
     const { trackId } = params;
     const url = `/audio-analysis/${trackId}`;
