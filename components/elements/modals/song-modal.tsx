@@ -4,17 +4,21 @@ import ExplicitIcon from "@mui/icons-material/Explicit";
 import { SpotifySong } from "@/types";
 import { formatDuration, formatDate } from "@/utils/format";
 import { PopularityDots, SpotifyLinkButton } from "@/components";
-import { useSpotifyEmbed } from "@/hooks/useSpotifyEmbed";
 import Image from "next/image";
+import { Embedded } from "@/components/embedded";
 
 interface SongModalProps {
   song: SpotifySong;
   open: boolean;
   onClose: () => void;
+  embedded?: {
+    html: string;
+    isLoading: boolean;
+  };
 }
 
-export const SongModal = ({ song, open, onClose }: SongModalProps) => {
-  const { embedHtml, isLoading } = useSpotifyEmbed(song.external_urls.spotify, open);
+export const SongModal = ({ song, open, onClose, embedded }: SongModalProps) => {
+  console.log("embedded", !!embedded);
 
   return (
     <Modal
@@ -137,10 +141,7 @@ export const SongModal = ({ song, open, onClose }: SongModalProps) => {
               </Box>
 
               <Divider />
-
-              {!isLoading && embedHtml && (
-                <Box className="overflow-hidden rounded-lg" dangerouslySetInnerHTML={{ __html: embedHtml }} />
-              )}
+              {embedded && <Embedded isLoading={embedded.isLoading} html={embedded.html} />}
 
               <Box className="flex flex-wrap items-center justify-between gap-2">
                 <div>

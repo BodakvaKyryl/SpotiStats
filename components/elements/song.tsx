@@ -5,6 +5,7 @@ import { formatDuration } from "@/utils/format";
 import { SongItemProps } from "@/types";
 import { PopularityDots } from "@/components";
 import { SongModal } from "./modals/song-modal";
+import { useSpotifyEmbed } from "@/hooks/useSpotifyEmbed";
 
 export const SongItem = ({ song }: SongItemProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -12,6 +13,8 @@ export const SongItem = ({ song }: SongItemProps) => {
   const handleClick = () => {
     setIsModalOpen(true);
   };
+
+  const { embedHtml, isLoading: isEmbedHtmlLoading } = useSpotifyEmbed(song.external_urls.spotify, isModalOpen);
 
   return (
     <>
@@ -55,7 +58,15 @@ export const SongItem = ({ song }: SongItemProps) => {
         />
       </ListItem>
 
-      <SongModal song={song} open={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <SongModal
+        song={song}
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        embedded={{
+          html: embedHtml,
+          isLoading: isEmbedHtmlLoading,
+        }}
+      />
     </>
   );
 };
