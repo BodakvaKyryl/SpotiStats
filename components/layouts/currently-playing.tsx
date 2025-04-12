@@ -44,7 +44,7 @@ export const CurrentlyPlaying = () => {
               </>
             )}
           </div>
-          {!isPlaying && <p className="text-white">{isEmpty ? "Nothing is playing" : "Loading..."}</p>}
+          {!isPlaying && <p className="mb-1 text-white">{isEmpty ? "Nothing is playing" : "Loading..."}</p>}
         </Box>
       </Paper>
     </div>
