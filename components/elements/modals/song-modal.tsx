@@ -3,7 +3,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import ExplicitIcon from "@mui/icons-material/Explicit";
 import { SpotifySong } from "@/types";
 import { formatDuration, formatDate } from "@/utils/format";
-import { PopularityDots } from "@/components";
+import { PopularityDots, SpotifyLinkButton } from "@/components";
+import { useSpotifyEmbed } from "@/hooks/useSpotifyEmbed";
 import Image from "next/image";
 
 interface SongModalProps {
@@ -13,6 +14,8 @@ interface SongModalProps {
 }
 
 export const SongModal = ({ song, open, onClose }: SongModalProps) => {
+  const { embedHtml, isLoading } = useSpotifyEmbed(song.external_urls.spotify);
+
   return (
     <Modal
       open={open}
@@ -76,18 +79,16 @@ export const SongModal = ({ song, open, onClose }: SongModalProps) => {
 
             <Box className="flex flex-grow flex-col gap-4">
               <div>
-                <div className="flex flex-wrap items-start justify-between gap-2">
-                  <div className="flex items-center gap-2">
-                    <Typography
-                      variant="h5"
-                      fontWeight={600}
-                      sx={{
-                        fontSize: { xs: "1.25rem", sm: "1.5rem" },
-                      }}>
-                      {song.name}
-                    </Typography>
-                    {song.explicit && <ExplicitIcon fontSize="small" className="text-gray-400" />}
-                  </div>
+                <div className="flex items-center gap-2">
+                  <Typography
+                    variant="h5"
+                    fontWeight={600}
+                    sx={{
+                      fontSize: { xs: "1.25rem", sm: "1.5rem" },
+                    }}>
+                    {song.name}
+                  </Typography>
+                  {song.explicit && <ExplicitIcon fontSize="small" className="text-gray-400" />}
                 </div>
                 <Typography
                   variant="subtitle1"
@@ -137,6 +138,10 @@ export const SongModal = ({ song, open, onClose }: SongModalProps) => {
 
               <Divider />
 
+              {!isLoading && embedHtml && (
+                <Box className="overflow-hidden rounded-lg" dangerouslySetInnerHTML={{ __html: embedHtml }} />
+              )}
+
               <Box className="flex flex-wrap items-center justify-between gap-2">
                 <div>
                   <Typography variant="caption" color="text.secondary">
@@ -155,6 +160,7 @@ export const SongModal = ({ song, open, onClose }: SongModalProps) => {
                       }}
                     />
                   )}
+                  <SpotifyLinkButton href={song.external_urls.spotify}>Open in Spotify</SpotifyLinkButton>
                 </div>
               </Box>
             </Box>

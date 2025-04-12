@@ -1,5 +1,19 @@
 import { Limit, RecentlyPlayedResponse, SpotifyAlbum, SpotifyArtist, SpotifySong, TimeRange } from "@/types";
 
+interface OEmbedResponse {
+  html: string;
+  width: number;
+  height: number;
+  version: string;
+  provider_name: string;
+  provider_url: string;
+  type: string;
+  title: string;
+  thumbnail_url: string | null;
+  thumbnail_width: number | null;
+  thumbnail_height: number | null;
+}
+
 const buildUrl = (path: string, params: URLSearchParams) => {
   return new URL(`/v1${path}?${params}`, "https://api.spotify.com").toString();
 };
@@ -111,6 +125,12 @@ export const SpotifyService = {
     return fetchData(url, { accessToken });
   },
 
+  getAlbumTracks: async (accessToken: string, params: { albumId: string }) => {
+    const { albumId } = params;
+    const url = `/albums/${albumId}/tracks`;
+    return fetchData<{ items: SpotifySong[] }>(url, { accessToken });
+  },
+
   getTrack: async (accessToken: string, params: { trackId: string }) => {
     const { trackId } = params;
     const url = `/tracks/${trackId}`;
@@ -156,5 +176,16 @@ export const SpotifyService = {
     const { trackId } = params;
     const url = `/audio-analysis/${trackId}`;
     return fetchData(url, { accessToken });
+  },
+
+  getOEmbed: async (url: string) => {
+    const encodedUrl = encodeURIComponent(url);
+    const response = await fetch(`https://open.spotify.com/oembed?url=${encodedUrl}`);
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch oEmbed data: ${response.status}`);
+    }
+
+    return response.json() as Promise<OEmbedResponse>;
   },
 };

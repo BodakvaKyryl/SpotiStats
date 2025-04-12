@@ -9,6 +9,9 @@ export interface SpotifyAlbum {
   total_tracks: number;
   release_date: string;
   artists: Array<{ name: string }>;
+  external_urls: {
+    spotify: string;
+  };
 }
 
 export interface AlbumItemProps {

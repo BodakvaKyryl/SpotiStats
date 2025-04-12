@@ -13,7 +13,9 @@ export interface SpotifySong {
   track_number: number;
   explicit: boolean;
   external_ids: string;
-  external_urls: string;
+  external_urls: {
+    spotify: string;
+  };
   preview_url: string | null;
   restrictions?: {
     reason: string;
