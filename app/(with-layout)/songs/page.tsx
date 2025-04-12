@@ -2,7 +2,7 @@
 
 import { Box, Paper, SelectChangeEvent } from "@mui/material";
 import { useState } from "react";
-import { Limit, SpotifySong, TimeRange } from "@/types";
+import { Limit, TimeRange } from "@/types";
 import { useAuthSWR } from "@/hooks/useSpotifyData";
 import { ProcessImage, ErrorContainer, TimeRangeSelector, SongItem } from "@/components";
 import { SpotifyService } from "@/services/spotify-service";
@@ -41,7 +41,7 @@ export default function Songs() {
         </div>
 
         <Paper elevation={0} variant="outlined" className="bg-background overflow-hidden rounded-md">
-          {data?.items?.map((song: SpotifySong, index: number) => (
+          {data?.items?.map((song, index) => (
             <Box
               key={song.id}
               sx={{

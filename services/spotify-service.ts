@@ -39,8 +39,32 @@ export const SpotifyService = {
   },
 
   getTopUserAlbums: async (accessToken: string, params: { timeRange: TimeRange; limit: Limit }) => {
-    const url = "/me/top/albums";
-    return fetchData<{ items: SpotifyAlbum[] }>(url, { accessToken, params });
+    const tracksResponse = await SpotifyService.getTopUserSongs(accessToken, params);
+
+    const albumIds = Array.from(new Set(tracksResponse.items.map((track) => track.album.id)));
+
+    const chunkedAlbumIds = albumIds.reduce<string[][]>((acc, id, i) => {
+      const chunkIndex = Math.floor(i / 20);
+      if (!acc[chunkIndex]) acc[chunkIndex] = [];
+      acc[chunkIndex].push(id);
+      return acc;
+    }, []);
+
+    const albumChunks = await Promise.all(
+      chunkedAlbumIds.map((chunk) => SpotifyService.getAlbums(accessToken, { ids: chunk }))
+    );
+
+    const albums = albumChunks.flatMap((chunk) => chunk.albums);
+
+    return { items: albums };
+  },
+
+  getAlbums: async (accessToken: string, params: { ids: string[] }) => {
+    const url = "/albums";
+    return fetchData<{ albums: SpotifyAlbum[] }>(url, {
+      accessToken,
+      params: { ids: params.ids.join(",") },
+    });
   },
 
   getTopUserArtists: async (accessToken: string, params: { timeRange: TimeRange; limit: Limit }) => {
@@ -68,8 +92,6 @@ export const SpotifyService = {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return fetchData<Record<string, any>>(url, { accessToken });
   },
-
-  // TODO: check if accessToken is needed
 
   getPlaylistTracks: async (accessToken: string, params: { playlistId: string; limit: Limit }) => {
     const { playlistId, ...restParams } = params;

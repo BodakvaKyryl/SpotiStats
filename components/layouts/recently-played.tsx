@@ -1,9 +1,10 @@
 import { Paper, Box } from "@mui/material";
 import { ProcessImage, ErrorContainer, RecentlyPlayedItem } from "@/components";
-import { useRecentlyPlayed } from "@/hooks/useSpotifyData";
+import { SpotifyService } from "@/services";
+import { useAuthSWR } from "@/hooks/useSpotifyData";
 
 export const RecentlyPlayed = () => {
-  const { data, error, isLoading } = useRecentlyPlayed("50");
+  const { data, error, isLoading } = useAuthSWR(SpotifyService.getRecentlyPlayed, { limit: "50" });
 
   if (isLoading) return <ProcessImage />;
   if (error) return <ErrorContainer message="Failed to load recently played tracks" />;

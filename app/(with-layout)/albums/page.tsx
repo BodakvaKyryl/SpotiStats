@@ -4,13 +4,17 @@ import { SelectChangeEvent } from "@mui/material";
 import { useState } from "react";
 import { AlbumItem, TimeRangeSelector, ErrorContainer, ProcessImage } from "@/components";
 import { Limit, SpotifyAlbum, TimeRange } from "@/types";
-import { useTopAlbums } from "@/hooks/useSpotifyData";
+import { useAuthSWR } from "@/hooks/useSpotifyData";
+import { SpotifyService } from "@/services";
 
 export default function Albums() {
   const [timeRange, setTimeRange] = useState<TimeRange>("short_term");
   const [limit, setLimit] = useState<Limit>("20");
 
-  const { data: albums, error, isLoading } = useTopAlbums(timeRange, limit);
+  const { data, error, isLoading } = useAuthSWR<typeof SpotifyService.getTopUserAlbums>(
+    SpotifyService.getTopUserAlbums,
+    { timeRange, limit }
+  );
 
   const handleTimeRangeChange = (event: SelectChangeEvent) => {
     setTimeRange(event.target.value as TimeRange);
@@ -37,10 +41,9 @@ export default function Albums() {
         </div>
 
         <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
-          {albums?.map((album: SpotifyAlbum, index: number) => {
-            console.log(`Rendering album ${index + 1}:`, album.name);
-            return <AlbumItem key={album.id} album={album} position={index + 1} />;
-          })}
+          {data?.items?.map((album: SpotifyAlbum, index: number) => (
+            <AlbumItem key={album.id} album={album} position={index + 1} />
+          ))}
         </div>
       </div>
     </div>

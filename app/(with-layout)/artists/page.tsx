@@ -3,14 +3,21 @@
 import { SelectChangeEvent } from "@mui/material";
 import { useState } from "react";
 import { Limit, TimeRange } from "@/types";
-import { useTopArtists } from "@/hooks/useSpotifyData";
 import { ArtistCard, ErrorContainer, ProcessImage, TimeRangeSelector } from "@/components";
+import { SpotifyService } from "@/services";
+import { useAuthSWR } from "@/hooks/useSpotifyData";
 
 export default function Artists() {
   const [timeRange, setTimeRange] = useState<TimeRange>("short_term");
   const [limit, setLimit] = useState<Limit>("20");
 
-  const { data, error, isLoading } = useTopArtists({ timeRange, limit });
+  const { data, error, isLoading } = useAuthSWR<typeof SpotifyService.getTopUserArtists>(
+    SpotifyService.getTopUserArtists,
+    {
+      timeRange,
+      limit,
+    }
+  );
 
   const handleTimeRangeChange = (event: SelectChangeEvent) => {
     setTimeRange(event.target.value as TimeRange);
@@ -37,9 +44,7 @@ export default function Artists() {
         </div>
 
         <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
-          {data?.items?.map((artist, index: number) => (
-            <ArtistCard key={artist.id} artist={artist} position={index + 1} />
-          ))}
+          {data?.items?.map((artist, index) => <ArtistCard key={artist.id} artist={artist} position={index + 1} />)}
         </div>
       </div>
     </div>

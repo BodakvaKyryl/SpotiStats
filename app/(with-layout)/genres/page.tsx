@@ -3,14 +3,15 @@
 import { SelectChangeEvent } from "@mui/material";
 import { useState } from "react";
 import { Limit, SpotifyArtist, TimeRange } from "@/types";
-import { useTopArtists } from "@/hooks/useSpotifyData";
 import { ProcessImage, ErrorContainer, TimeRangeSelector, GenreCard } from "@/components";
+import { SpotifyService } from "@/services";
+import { useAuthSWR } from "@/hooks/useSpotifyData";
 
 export default function Genres() {
   const [timeRange, setTimeRange] = useState<TimeRange>("short_term");
   const [limit, setLimit] = useState<Limit>("20");
 
-  const { data: artistsData, error, isLoading } = useTopArtists(timeRange, limit);
+  const { data: artistsData, error, isLoading } = useAuthSWR(SpotifyService.getTopUserArtists, { timeRange, limit });
 
   const handleTimeRangeChange = (event: SelectChangeEvent) => {
     setTimeRange(event.target.value as TimeRange);
