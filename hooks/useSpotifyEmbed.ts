@@ -1,30 +1,15 @@
 "use client";
-
-import { useState, useEffect } from "react";
 import { SpotifyService } from "@/services";
+import useSWR from "swr";
 
-export const useSpotifyEmbed = (url: string) => {
-  const [embedHtml, setEmbedHtml] = useState<string>("");
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-
-  useEffect(() => {
-    const fetchEmbed = async () => {
-      try {
-        setIsLoading(true);
-        const data = await SpotifyService.getOEmbed(url);
-        setEmbedHtml(data.html);
-      } catch (err) {
-        setError(err instanceof Error ? err : new Error("Failed to fetch embed"));
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (url) {
-      fetchEmbed();
+export const useSpotifyEmbed = (url: string, shouldFetch?: boolean) => {
+  const { data: { html: embedHtml } = { html: "" }, ...rest } = useSWR(
+    shouldFetch ? url : null,
+    async (url: string) => SpotifyService.getOEmbed(url),
+    {
+      revalidateOnFocus: false,
     }
-  }, [url]);
+  );
 
-  return { embedHtml, isLoading, error };
+  return { embedHtml, ...rest };
 };
