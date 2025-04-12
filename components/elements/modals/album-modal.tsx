@@ -13,7 +13,7 @@ interface AlbumModalProps {
 }
 
 export const AlbumModal = ({ album, open, onClose }: AlbumModalProps) => {
-  const { embedHtml, isLoading } = useSpotifyEmbed(album.external_urls.spotify);
+  const { embedHtml, isLoading } = useSpotifyEmbed(album.external_urls.spotify, open);
 
   return (
     <Modal

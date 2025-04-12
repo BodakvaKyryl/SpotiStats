@@ -12,7 +12,7 @@ interface ArtistModalProps {
 }
 
 export const ArtistModal = ({ artist, open, onClose }: ArtistModalProps) => {
-  const { embedHtml, isLoading } = useSpotifyEmbed(artist.external_urls.spotify);
+  const { embedHtml, isLoading } = useSpotifyEmbed(artist.external_urls.spotify, open);
 
   return (
     <Modal

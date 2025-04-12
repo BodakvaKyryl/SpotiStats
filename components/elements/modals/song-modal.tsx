@@ -14,7 +14,7 @@ interface SongModalProps {
 }
 
 export const SongModal = ({ song, open, onClose }: SongModalProps) => {
-  const { embedHtml, isLoading } = useSpotifyEmbed(song.external_urls.spotify);
+  const { embedHtml, isLoading } = useSpotifyEmbed(song.external_urls.spotify, open);
 
   return (
     <Modal
