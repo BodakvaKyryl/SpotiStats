@@ -1,4 +1,12 @@
-import { Limit, RecentlyPlayedResponse, SpotifyAlbum, SpotifyArtist, SpotifySong, TimeRange } from "@/types";
+import {
+  Limit,
+  RecentlyPlayedResponse,
+  SpotifyAlbum,
+  SpotifyArtist,
+  SpotifySong,
+  TimeRange,
+  SpotifyPlaybackState,
+} from "@/types";
 
 interface OEmbedResponse {
   html: string;
@@ -101,10 +109,35 @@ export const SpotifyService = {
     return fetchData(url, { accessToken });
   },
 
-  getCurrentlyPlaying: async (accessToken: string) => {
+  getCurrentlyPlaying: async (accessToken: string): Promise<SpotifyPlaybackState | null> => {
     const url = "/me/player/currently-playing";
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return fetchData<Record<string, any>>(url, { accessToken });
+    try {
+      const urlWithParams = buildUrl(url, new URLSearchParams());
+      const response = await fetch(urlWithParams, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      if (response.status === 204) {
+        return null;
+      }
+
+      if (!response.ok) {
+        if (response.status === 429) {
+          const retryAfter = response.headers.get("Retry-After");
+          throw new Error(`Rate limited. Retry after ${retryAfter} seconds`);
+        }
+        throw new Error(`Failed to fetch currently playing: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data as SpotifyPlaybackState;
+    } catch (error) {
+      throw error;
+    }
   },
 
   getPlaylistTracks: async (accessToken: string, params: { playlistId: string; limit: Limit }) => {
