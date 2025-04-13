@@ -20,7 +20,7 @@ export const CurrentlyPlaying = () => {
         variant="outlined"
         className={`fade-in-out bg-background overflow-hidden rounded-md transition-opacity duration-500`}>
         <Box className="space-y-2 p-4">
-          {isLoading || (!isPlaying && !isEmpty) ? (
+          {isLoading ? (
             <div className="flex items-center space-x-4">
               <Skeleton variant="rectangular" width={56} height={56} className="rounded-md" />
               <div className="flex-1">
@@ -34,10 +34,16 @@ export const CurrentlyPlaying = () => {
                 <>
                   <SongItem song={data.item} />
                   <div className="mx-4">
+                    <Skeleton
+                      variant="rectangular"
+                      height={4}
+                      className="rounded-full"
+                      sx={{ display: isLoading ? "block" : "none" }}
+                    />
                     <LinearProgress
                       variant="determinate"
                       value={Math.min(((data.progress_ms || 0) / (data.item.duration_ms || 1)) * 100, 100)}
-                      sx={{ height: 4, borderRadius: 2 }}
+                      sx={{ height: 4, borderRadius: 2, display: isLoading ? "none" : "block" }}
                     />
                     <Box className="mt-1 flex justify-between">
                       <Typography variant="caption" color="text.secondary">

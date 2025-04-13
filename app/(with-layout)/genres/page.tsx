@@ -1,6 +1,6 @@
 "use client";
 
-import { ErrorContainer, GenreCard, ProcessImage, TimeRangeSelector } from "@/components";
+import { ErrorContainer, GenreCard, TimeRangeSelector } from "@/components";
 import { useAuthSWR } from "@/hooks/useSpotifyData";
 import { SpotifyService } from "@/services";
 import { Limit, SpotifyArtist, TimeRange } from "@/types";
@@ -11,7 +11,7 @@ export default function Genres() {
   const [timeRange, setTimeRange] = useState<TimeRange>("short_term");
   const [limit, setLimit] = useState<Limit>("20");
 
-  const { data: artistsData, error, isLoading } = useAuthSWR(SpotifyService.getTopUserArtists, { timeRange, limit });
+  const { data: artistsData, error } = useAuthSWR(SpotifyService.getTopUserArtists, { timeRange, limit });
 
   const handleTimeRangeChange = (event: SelectChangeEvent) => {
     setTimeRange(event.target.value as TimeRange);
@@ -21,7 +21,6 @@ export default function Genres() {
     setLimit(event.target.value as Limit);
   };
 
-  if (isLoading) return <ProcessImage />;
   if (error) return <ErrorContainer message="Failed to load your top genres. Please try again later." />;
 
   const genreMap = new Map<string, { count: number; artists: string[] }>();

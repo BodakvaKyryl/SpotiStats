@@ -2,28 +2,59 @@
 
 import type { RecentlyPlayedTrack } from "@/types/recently-played.type";
 import { formatDuration } from "@/utils/format";
-import { Avatar, Box, ListItem, ListItemAvatar, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Avatar, Box, ListItem, ListItemAvatar, Skeleton, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { formatDistanceToNow } from "date-fns";
 import { useState } from "react";
 import { SongModal } from "./modals/song-modal";
 
 interface RecentlyPlayedItemProps {
-  track: RecentlyPlayedTrack;
+  track?: RecentlyPlayedTrack;
+  isLoading?: boolean;
 }
 
-export const RecentlyPlayedItem = ({ track }: RecentlyPlayedItemProps) => {
+export const RecentlyPlayedItem = ({ track, isLoading = false }: RecentlyPlayedItemProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const handleClick = () => {
+    if (isLoading) return;
+    setIsModalOpen(true);
+  };
+
+  if (isLoading || !track) {
+    return (
+      <ListItem className="transition-colors">
+        <ListItemAvatar>
+          <Skeleton variant="rectangular" width={56} height={56} className="rounded-md" />
+        </ListItemAvatar>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            width: "100%",
+            gap: isMobile ? 1 : 2,
+          }}>
+          <Box
+            sx={{
+              flexGrow: 1,
+              minWidth: 0,
+              maxWidth: isMobile ? "90%" : "90%",
+            }}>
+            <Skeleton variant="text" width="60%" height={24} />
+            <Skeleton variant="text" width="40%" height={20} />
+          </Box>
+          <Skeleton variant="text" width={60} sx={{ display: isMobile ? "none" : "block" }} />
+          <Skeleton variant="text" width={70} />
+        </Box>
+      </ListItem>
+    );
+  }
 
   const artistNames = track.track.artists.map((artist) => artist.name).join(", ");
 
   const truncateText = (text: string, maxLength: number) => {
     return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
-  };
-
-  const handleClick = () => {
-    setIsModalOpen(true);
   };
 
   return (

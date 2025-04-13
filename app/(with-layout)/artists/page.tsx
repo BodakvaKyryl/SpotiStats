@@ -1,10 +1,10 @@
 "use client";
 
-import { ArtistCard, ErrorContainer, ProcessImage, TimeRangeSelector } from "@/components";
+import { ArtistCard, ErrorContainer, TimeRangeSelector } from "@/components";
 import { useAuthSWR } from "@/hooks/useSpotifyData";
 import { SpotifyService } from "@/services";
 import { Limit, TimeRange } from "@/types";
-import { SelectChangeEvent } from "@mui/material";
+import { Box, Paper, SelectChangeEvent, Skeleton } from "@mui/material";
 import { useState } from "react";
 
 export default function Artists() {
@@ -27,7 +27,25 @@ export default function Artists() {
     setLimit(event.target.value as Limit);
   };
 
-  if (isLoading) return <ProcessImage />;
+  const renderSkeletonItems = () => {
+    return Array(8)
+      .fill(null)
+      .map((_, index) => (
+        <Box key={`skeleton-${index}`}>
+          <Paper elevation={0} variant="outlined" className="h-full">
+            <div className="flex aspect-square items-center justify-center overflow-hidden rounded-t-md bg-neutral-100 dark:bg-neutral-800">
+              <Skeleton variant="rectangular" width="100%" height="100%" />
+            </div>
+            <div className="flex flex-col items-center gap-2 p-4">
+              <Skeleton variant="text" width="70%" height={24} />
+              <Skeleton variant="text" width="50%" height={20} />
+              <Skeleton variant="text" width="40%" height={16} />
+            </div>
+          </Paper>
+        </Box>
+      ));
+  };
+
   if (error) return <ErrorContainer message="Failed to load your top artists. Please try again later." />;
 
   return (
@@ -44,7 +62,9 @@ export default function Artists() {
         </div>
 
         <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
-          {data?.items?.map((artist, index) => <ArtistCard key={artist.id} artist={artist} position={index + 1} />)}
+          {isLoading
+            ? renderSkeletonItems()
+            : data?.items?.map((artist, index) => <ArtistCard key={artist.id} artist={artist} position={index + 1} />)}
         </div>
       </div>
     </div>
