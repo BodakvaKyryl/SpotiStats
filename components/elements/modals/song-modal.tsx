@@ -4,7 +4,6 @@ import ExplicitIcon from "@mui/icons-material/Explicit";
 import { SpotifySong } from "@/types";
 import { formatDuration, formatDate } from "@/utils/format";
 import { PopularityDots, SpotifyLinkButton } from "@/components";
-import Image from "next/image";
 import { Embedded } from "@/components/embedded";
 
 interface SongModalProps {
@@ -29,13 +28,13 @@ export const SongModal = ({ song, open, onClose, embedded }: SongModalProps) => 
       className="flex items-center justify-center p-4">
       <Fade in={open} timeout={300}>
         <Box
-          className="relative max-h-[90vh] w-full overflow-y-auto rounded-lg bg-white dark:bg-neutral-900"
+          className="relative max-h-[90vh] w-full overflow-y-auto rounded-lg bg-white/70 backdrop-blur-md dark:bg-neutral-900/70"
           sx={{
             outline: "none",
             maxWidth: { xs: "100%", sm: "520px", md: "720px" },
             p: { xs: 2, sm: 4, md: 6 },
             transform: "scale(1)",
-            transition: "transform 0.3s ease-in-out",
+            transition: "all 0.3s ease-in-out",
             "&:hover": {
               transform: "scale(1.0)",
             },
@@ -66,21 +65,6 @@ export const SongModal = ({ song, open, onClose, embedded }: SongModalProps) => 
             sx={{
               flexDirection: { xs: "column", sm: "row" },
             }}>
-            <div
-              className="relative mx-auto sm:mx-0"
-              style={{
-                width: "min(100%, 192px)",
-                height: "min(100vw, 192px)",
-              }}>
-              <Image
-                src={song.album.images[0]?.url || "/fallback.jpg"}
-                alt={song.name}
-                fill
-                className="rounded-lg object-cover"
-                sizes="(max-width: 640px) 100vw, 192px"
-              />
-            </div>
-
             <Box className="flex flex-grow flex-col gap-4">
               <div>
                 <div className="flex items-center gap-2">
@@ -141,6 +125,7 @@ export const SongModal = ({ song, open, onClose, embedded }: SongModalProps) => 
               </Box>
 
               <Divider />
+
               {embedded && <Embedded isLoading={embedded.isLoading} html={embedded.html} />}
 
               <Box className="flex flex-wrap items-center justify-between gap-2">

@@ -1,10 +1,11 @@
-import { Modal, Box, Typography, IconButton, Divider, Fade } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import { PopularityDots } from "@/components";
+import { useAuthSWR } from "@/hooks/useSpotifyData";
+import { useSpotifyEmbed } from "@/hooks/useSpotifyEmbed";
+import { SpotifyService } from "@/services";
 import { SpotifyAlbum } from "@/types";
 import { formatDate } from "@/utils/format";
-import { PopularityDots, SpotifyLinkButton } from "@/components";
-import { useSpotifyEmbed } from "@/hooks/useSpotifyEmbed";
-import Image from "next/image";
+import CloseIcon from "@mui/icons-material/Close";
+import { Box, Chip, Divider, Fade, IconButton, Modal, Typography } from "@mui/material";
 
 interface AlbumModalProps {
   album: SpotifyAlbum;
@@ -12,8 +13,30 @@ interface AlbumModalProps {
   onClose: () => void;
 }
 
+type ArtistsParams = {
+  ids: string[];
+};
+
+type ArtistResponse = {
+  artists: Array<{
+    genres: string[];
+  }>;
+};
+
 export const AlbumModal = ({ album, open, onClose }: AlbumModalProps) => {
-  const { embedHtml, isLoading } = useSpotifyEmbed(album.external_urls.spotify, open);
+  const { embedHtml, isLoading: isEmbedLoading } = useSpotifyEmbed(album.external_urls.spotify, open);
+
+  const artistIds = album.artists.map((artist) => artist.id);
+
+  const { data: artistsData } = useAuthSWR<typeof SpotifyService.getArtists, ArtistsParams>(
+    artistIds.length > 0 ? SpotifyService.getArtists : null,
+    artistIds.length > 0 ? { ids: artistIds } : null,
+    { revalidateOnFocus: false, revalidateIfStale: false }
+  );
+
+  const genres = Array.from(new Set((artistsData as ArtistResponse)?.artists?.flatMap((artist) => artist.genres) || []))
+    .filter((genre): genre is string => typeof genre === "string")
+    .sort();
 
   return (
     <Modal
@@ -24,13 +47,13 @@ export const AlbumModal = ({ album, open, onClose }: AlbumModalProps) => {
       className="flex items-center justify-center p-4">
       <Fade in={open} timeout={300}>
         <Box
-          className="relative max-h-[90vh] w-full overflow-y-auto rounded-lg bg-white dark:bg-neutral-900"
+          className="relative max-h-[90vh] w-full overflow-y-auto rounded-lg bg-white/70 backdrop-blur-md dark:bg-neutral-900/70"
           sx={{
             outline: "none",
             maxWidth: { xs: "100%", sm: "520px", md: "720px" },
             p: { xs: 2, sm: 4, md: 6 },
             transform: "scale(1)",
-            transition: "transform 0.3s ease-in-out",
+            transition: "all 0.3s ease-in-out",
             "&:hover": {
               transform: "scale(1.0)",
             },
@@ -61,21 +84,6 @@ export const AlbumModal = ({ album, open, onClose }: AlbumModalProps) => {
             sx={{
               flexDirection: { xs: "column", sm: "row" },
             }}>
-            <div
-              className="relative mx-auto sm:mx-0"
-              style={{
-                width: "min(100%, 192px)",
-                height: "min(100vw, 192px)",
-              }}>
-              <Image
-                src={album.images[0]?.url || "/fallback.jpg"}
-                alt={album.name}
-                fill
-                className="rounded-lg object-cover"
-                sizes="(max-width: 640px) 100vw, 192px"
-              />
-            </div>
-
             <Box className="flex flex-grow flex-col gap-4">
               <div>
                 <Typography
@@ -94,6 +102,24 @@ export const AlbumModal = ({ album, open, onClose }: AlbumModalProps) => {
                   }}>
                   {album.artists.map((artist) => artist.name).join(", ")}
                 </Typography>
+
+                {genres.length > 0 && (
+                  <Box className="mt-2 flex flex-wrap gap-2">
+                    {genres.map((genre) => (
+                      <Chip
+                        key={genre}
+                        label={genre}
+                        size="medium"
+                        color="primary"
+                        variant="outlined"
+                        sx={{
+                          fontSize: { xs: "0.75rem", sm: "0.875rem" },
+                          textTransform: "capitalize",
+                        }}
+                      />
+                    ))}
+                  </Box>
+                )}
               </div>
 
               <Divider />
@@ -102,7 +128,7 @@ export const AlbumModal = ({ album, open, onClose }: AlbumModalProps) => {
                 className="gap-4"
                 sx={{
                   display: "grid",
-                  gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+                  gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "1fr 1fr 1fr" },
                 }}>
                 <div>
                   <Typography variant="caption" color="text.secondary">
@@ -116,23 +142,29 @@ export const AlbumModal = ({ album, open, onClose }: AlbumModalProps) => {
                   </Typography>
                   <Typography variant="body2">{album.total_tracks}</Typography>
                 </div>
-              </Box>
-
-              <Divider />
-
-              {!isLoading && embedHtml && (
-                <Box className="overflow-hidden rounded-lg" dangerouslySetInnerHTML={{ __html: embedHtml }} />
-              )}
-
-              <Box className="flex flex-wrap items-center justify-between gap-2">
                 <div>
                   <Typography variant="caption" color="text.secondary">
                     Popularity
                   </Typography>
                   <PopularityDots popularity={album.popularity} />
                 </div>
-                <SpotifyLinkButton href={album.external_urls.spotify}>Open in Spotify</SpotifyLinkButton>
               </Box>
+
+              <Divider />
+
+              {!isEmbedLoading && embedHtml && (
+                <Fade in timeout={1500}>
+                  <Box
+                    className="overflow-hidden rounded-lg"
+                    sx={{
+                      opacity: 1,
+                      transform: "translateY(0)",
+                      transition: "opacity 0.5s ease-in-out, transform 0.5s ease-in-out",
+                    }}
+                    dangerouslySetInnerHTML={{ __html: embedHtml }}
+                  />
+                </Fade>
+              )}
             </Box>
           </Box>
         </Box>

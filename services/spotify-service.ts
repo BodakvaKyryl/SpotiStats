@@ -3,9 +3,9 @@ import {
   RecentlyPlayedResponse,
   SpotifyAlbum,
   SpotifyArtist,
+  SpotifyPlaybackState,
   SpotifySong,
   TimeRange,
-  SpotifyPlaybackState,
 } from "@/types";
 
 interface OEmbedResponse {
@@ -174,6 +174,14 @@ export const SpotifyService = {
     const { artistId } = params;
     const url = `/artists/${artistId}`;
     return fetchData(url, { accessToken });
+  },
+
+  getArtists: async (accessToken: string, params: { ids: string[] }) => {
+    const url = "/artists";
+    return fetchData(url, {
+      accessToken,
+      params: { ids: params.ids.join(",") },
+    });
   },
 
   getArtistTopTracks: async (accessToken: string, params: { artistId: string; market: string }) => {

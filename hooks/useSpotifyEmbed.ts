@@ -1,4 +1,5 @@
 "use client";
+
 import { SpotifyService } from "@/services";
 import { useMemo, useState } from "react";
 import useSWR from "swr";

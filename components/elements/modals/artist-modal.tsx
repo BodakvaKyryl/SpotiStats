@@ -1,9 +1,8 @@
-import { Modal, Box, Typography, IconButton, Divider, Fade, Chip } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import { SpotifyArtist } from "@/types";
 import { PopularityDots, SpotifyLinkButton } from "@/components";
 import { useSpotifyEmbed } from "@/hooks/useSpotifyEmbed";
-import Image from "next/image";
+import { SpotifyArtist } from "@/types";
+import CloseIcon from "@mui/icons-material/Close";
+import { Box, Chip, Divider, Fade, IconButton, Modal, Typography } from "@mui/material";
 
 interface ArtistModalProps {
   artist: SpotifyArtist;
@@ -23,13 +22,13 @@ export const ArtistModal = ({ artist, open, onClose }: ArtistModalProps) => {
       className="flex items-center justify-center p-4">
       <Fade in={open} timeout={300}>
         <Box
-          className="relative max-h-[90vh] w-full overflow-y-auto rounded-lg bg-white dark:bg-neutral-900"
+          className="relative max-h-[90vh] w-full overflow-y-auto rounded-lg bg-white/70 backdrop-blur-md dark:bg-neutral-900/70"
           sx={{
             outline: "none",
             maxWidth: { xs: "100%", sm: "520px", md: "720px" },
             p: { xs: 2, sm: 4, md: 6 },
             transform: "scale(1)",
-            transition: "transform 0.3s ease-in-out",
+            transition: "all 0.3s ease-in-out",
             "&:hover": {
               transform: "scale(1.0)",
             },
@@ -60,21 +59,6 @@ export const ArtistModal = ({ artist, open, onClose }: ArtistModalProps) => {
             sx={{
               flexDirection: { xs: "column", sm: "row" },
             }}>
-            <div
-              className="relative mx-auto sm:mx-0"
-              style={{
-                width: "min(100%, 192px)",
-                height: "min(100vw, 192px)",
-              }}>
-              <Image
-                src={artist.images[0]?.url || "/fallback.jpg"}
-                alt={artist.name}
-                fill
-                className="rounded-lg object-cover"
-                sizes="(max-width: 640px) 100vw, 192px"
-              />
-            </div>
-
             <Box className="flex flex-grow flex-col gap-4">
               <div>
                 <Typography
@@ -91,7 +75,8 @@ export const ArtistModal = ({ artist, open, onClose }: ArtistModalProps) => {
                     <Chip
                       key={genre}
                       label={genre}
-                      size="small"
+                      color="primary"
+                      size="medium"
                       variant="outlined"
                       sx={{
                         fontSize: { xs: "0.75rem", sm: "0.875rem" },
@@ -104,7 +89,17 @@ export const ArtistModal = ({ artist, open, onClose }: ArtistModalProps) => {
               <Divider />
 
               {!isLoading && embedHtml && (
-                <Box className="overflow-hidden rounded-lg" dangerouslySetInnerHTML={{ __html: embedHtml }} />
+                <Fade in timeout={1500}>
+                  <Box
+                    className="overflow-hidden rounded-lg"
+                    sx={{
+                      opacity: 1,
+                      transform: "translateY(0)",
+                      transition: "opacity 2s ease-in-out, transform 2s ease-in-out",
+                    }}
+                    dangerouslySetInnerHTML={{ __html: embedHtml }}
+                  />
+                </Fade>
               )}
 
               <Box className="flex flex-wrap items-center justify-between gap-2">
