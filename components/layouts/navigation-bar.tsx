@@ -57,7 +57,7 @@ const StyledLink = styled(Link)(({ theme }) => ({
 }));
 
 const UserStack = styled(Stack)(({ theme }) => ({
-  background: alpha(theme.palette.background.paper, 0.5),
+  background: alpha(theme.palette.background.paper, 0),
   borderRadius: theme.shape.borderRadius,
   padding: theme.spacing(1, 2),
   backdropFilter: "blur(5px)",
@@ -66,8 +66,8 @@ const UserStack = styled(Stack)(({ theme }) => ({
 const MobileDrawer = styled(Drawer)(({ theme }) => ({
   "& .MuiDrawer-paper": {
     width: 240,
-    background: alpha(theme.palette.background.paper, 0.95),
-    backdropFilter: "blur(10px)",
+    background: alpha(theme.palette.background.paper, 0.5),
+    backdropFilter: "blur(20px)",
     borderLeft: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
     padding: theme.spacing(2),
   },
@@ -178,6 +178,8 @@ export const Navbar = () => {
                 color: "text.primary",
                 "&:hover": {
                   color: colors.spotifyGreen,
+                  backgroundColor: alpha(colors.spotifyGreen, 0.1),
+                  transform: "scale(1.05)",
                 },
               }}>
               <MenuIcon />
@@ -198,7 +200,7 @@ export const Navbar = () => {
                 sx={{
                   width: 32,
                   height: 32,
-                  border: `2px solid ${alpha(colors.spotifyGreen, 0.3)}`,
+                  border: `2px solid ${alpha(colors.spotifyGreen, 1)}`,
                 }}>
                 {session.user.name?.charAt(0)}
               </Avatar>
