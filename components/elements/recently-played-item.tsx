@@ -1,5 +1,6 @@
 "use client";
 
+import { useSpotifyEmbed } from "@/hooks/useSpotifyEmbed";
 import type { RecentlyPlayedTrack } from "@/types/recently-played.type";
 import { formatDuration } from "@/utils/format";
 import { Avatar, Box, ListItem, ListItemAvatar, Skeleton, Typography, useMediaQuery, useTheme } from "@mui/material";
@@ -16,6 +17,7 @@ export const RecentlyPlayedItem = ({ track, isLoading = false }: RecentlyPlayedI
   const [isModalOpen, setIsModalOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const { embedHtml, isLoading: isEmbedHtmlLoading } = useSpotifyEmbed(track?.track.external_urls.spotify, isModalOpen);
 
   const handleClick = () => {
     if (isLoading) return;
@@ -130,7 +132,15 @@ export const RecentlyPlayedItem = ({ track, isLoading = false }: RecentlyPlayedI
         </Box>
       </ListItem>
 
-      <SongModal song={track.track} open={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <SongModal
+        song={track.track}
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        embedded={{
+          html: embedHtml,
+          isLoading: isEmbedHtmlLoading,
+        }}
+      />
     </>
   );
 };
