@@ -1,6 +1,6 @@
-import { Box, Typography, Avatar } from "@mui/material";
-import { SongItemProps } from "@/types";
 import { PopularityDots } from "@/components";
+import { SongItemProps } from "@/types";
+import { Avatar, Box, Typography } from "@mui/material";
 
 export const TopSongItem = ({ song }: SongItemProps) => (
   <Box className="flex flex-col gap-2 p-2 transition-colors hover:bg-gray-50 dark:hover:bg-neutral-900">

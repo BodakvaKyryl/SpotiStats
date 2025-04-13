@@ -1,10 +1,11 @@
 "use client";
-import { useState } from "react";
+
+import { PopularityDots } from "@/components";
 import { AlbumItemProps } from "@/types";
 import { CardContent, Typography } from "@mui/material";
-import { StyledCard, PositionBadge, ImageContainer, MediaImage } from "./shared/media-card";
-import { PopularityDots } from "@/components";
+import { useState } from "react";
 import { AlbumModal } from "./modals/album-modal";
+import { ImageContainer, MediaImage, PositionBadge, StyledCard } from "./shared/media-card";
 
 export const AlbumItem = ({ album, position }: AlbumItemProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);

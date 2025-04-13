@@ -1,9 +1,9 @@
 "use client";
 
-import { useSession } from "next-auth/react";
-import useSWR from "swr";
 import { SpotifyService } from "@/services";
 import { SpotifyPlaybackState } from "@/types";
+import { useSession } from "next-auth/react";
+import useSWR from "swr";
 
 export function useNowPlaying() {
   const { data: session } = useSession();

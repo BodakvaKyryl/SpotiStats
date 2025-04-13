@@ -1,11 +1,11 @@
 "use client";
 
+import { ErrorContainer, HorizontalScroll, ProcessImage, SpotifyButton, TopSongItem } from "@/components";
+import { useAuthSWR } from "@/hooks/useSpotifyData";
+import { SpotifyService } from "@/services/spotify-service";
+import { SpotifySong } from "@/types";
 import { Box } from "@mui/material";
 import Link from "next/link";
-import { useAuthSWR } from "@/hooks/useSpotifyData";
-import { SpotifySong } from "@/types";
-import { ErrorContainer, ProcessImage, TopSongItem, SpotifyButton, HorizontalScroll } from "@/components";
-import { SpotifyService } from "@/services/spotify-service";
 
 export const TopSongs = () => {
   const { data, error, isLoading } = useAuthSWR<typeof SpotifyService.getTopUserSongs>(SpotifyService.getTopUserSongs, {

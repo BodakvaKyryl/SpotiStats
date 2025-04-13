@@ -1,7 +1,7 @@
-import { Paper, Box } from "@mui/material";
-import { ProcessImage, ErrorContainer, RecentlyPlayedItem } from "@/components";
-import { SpotifyService } from "@/services";
+import { ErrorContainer, ProcessImage, RecentlyPlayedItem } from "@/components";
 import { useAuthSWR } from "@/hooks/useSpotifyData";
+import { SpotifyService } from "@/services";
+import { Box, Paper } from "@mui/material";
 
 export const RecentlyPlayed = () => {
   const { data, error, isLoading } = useAuthSWR(SpotifyService.getRecentlyPlayed, { limit: "50" });

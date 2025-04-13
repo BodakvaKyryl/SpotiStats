@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { ListItem, ListItemAvatar, Avatar, Typography, Box, useTheme, useMediaQuery } from "@mui/material";
-import { formatDuration } from "@/utils/format";
-import { formatDistanceToNow } from "date-fns";
 import type { RecentlyPlayedTrack } from "@/types/recently-played.type";
+import { formatDuration } from "@/utils/format";
+import { Avatar, Box, ListItem, ListItemAvatar, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { formatDistanceToNow } from "date-fns";
+import { useState } from "react";
 import { SongModal } from "./modals/song-modal";
 
 interface RecentlyPlayedItemProps {

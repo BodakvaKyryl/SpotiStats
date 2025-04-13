@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { Box, Typography, Avatar } from "@mui/material";
-import { ArtistItemProps } from "@/types";
 import { PopularityDots } from "@/components";
+import { ArtistItemProps } from "@/types";
+import { Avatar, Box, Typography } from "@mui/material";
+import { useState } from "react";
 import { ArtistModal } from "./modals/artist-modal";
 
 export const TopArtistItem = ({ artist }: ArtistItemProps) => {

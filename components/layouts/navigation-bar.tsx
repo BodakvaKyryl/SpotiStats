@@ -1,28 +1,28 @@
 "use client";
 
+import { LogoutButton, SpotifyButton } from "@/components";
+import { colors } from "@/styles/colors";
+import CloseIcon from "@mui/icons-material/Close";
+import MenuIcon from "@mui/icons-material/Menu";
 import {
+  alpha,
   AppBar,
   Avatar,
   Box,
   CircularProgress,
+  Drawer,
+  IconButton,
+  List,
+  ListItem,
+  ListItemText,
   Stack,
   Toolbar,
   Typography,
   useTheme,
-  alpha,
-  Drawer,
-  List,
-  ListItem,
-  ListItemText,
-  IconButton,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
-import MenuIcon from "@mui/icons-material/Menu";
-import CloseIcon from "@mui/icons-material/Close";
-import { LogoutButton, SpotifyButton } from "@/components";
-import { colors } from "@/styles/colors";
 import { useState } from "react";
 
 const StyledNavBar = styled(AppBar)(({ theme }) => ({

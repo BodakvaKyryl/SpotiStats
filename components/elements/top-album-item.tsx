@@ -1,8 +1,9 @@
 "use client";
-import { useState } from "react";
-import { Box, Typography, Avatar } from "@mui/material";
-import { AlbumItemProps } from "@/types";
+
 import { PopularityDots } from "@/components";
+import { AlbumItemProps } from "@/types";
+import { Avatar, Box, Typography } from "@mui/material";
+import { useState } from "react";
 import { AlbumModal } from "./modals/album-modal";
 
 export const TopAlbumItem = ({ album }: AlbumItemProps) => {

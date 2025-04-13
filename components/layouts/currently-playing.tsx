@@ -1,9 +1,9 @@
 "use client";
 
-import { Paper, Typography, Box, LinearProgress } from "@mui/material";
 import { ProcessImage, SongItem } from "@/components";
-import { formatDuration } from "@/utils/format";
 import { useNowPlaying } from "@/hooks/useNowPlaying";
+import { formatDuration } from "@/utils/format";
+import { Box, LinearProgress, Paper, Typography } from "@mui/material";
 
 export const CurrentlyPlaying = () => {
   const { data, isLoading, isEmpty } = useNowPlaying();

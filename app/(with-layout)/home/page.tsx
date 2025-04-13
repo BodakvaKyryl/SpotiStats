@@ -1,6 +1,6 @@
 "use client";
 
-import { CurrentlyPlaying, RecentlyPlayed, TopSongs, TopArtists } from "@/components";
+import { CurrentlyPlaying, RecentlyPlayed, TopArtists, TopSongs } from "@/components";
 
 export default function Home() {
   return (

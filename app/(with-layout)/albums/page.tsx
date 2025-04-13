@@ -1,11 +1,11 @@
 "use client";
 
-import { SelectChangeEvent } from "@mui/material";
-import { useState } from "react";
-import { AlbumItem, TimeRangeSelector, ErrorContainer, ProcessImage } from "@/components";
-import { Limit, SpotifyAlbum, TimeRange } from "@/types";
+import { AlbumItem, ErrorContainer, ProcessImage, TimeRangeSelector } from "@/components";
 import { useAuthSWR } from "@/hooks/useSpotifyData";
 import { SpotifyService } from "@/services";
+import { Limit, SpotifyAlbum, TimeRange } from "@/types";
+import { SelectChangeEvent } from "@mui/material";
+import { useState } from "react";
 
 export default function Albums() {
   const [timeRange, setTimeRange] = useState<TimeRange>("short_term");

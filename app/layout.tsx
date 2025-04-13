@@ -1,12 +1,12 @@
 "use client";
 
+import NextAuthProvider from "@/providers/nextAuthProvider";
 import { ThemeProvider } from "@emotion/react";
 import { createTheme, CssBaseline } from "@mui/material";
 import { red } from "@mui/material/colors";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
 import { PropsWithChildren } from "react";
-import NextAuthProvider from "@/providers/nextAuthProvider";
+import "./globals.css";
 
 const darkTheme = createTheme({
   palette: {

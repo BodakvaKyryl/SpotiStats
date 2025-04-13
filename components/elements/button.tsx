@@ -1,5 +1,5 @@
-import { Button, ButtonProps } from "@mui/material";
 import { colors } from "@/styles/colors";
+import { Button, ButtonProps } from "@mui/material";
 
 interface SpotifyLinkButtonProps extends ButtonProps {
   href: string;

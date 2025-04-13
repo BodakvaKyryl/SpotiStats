@@ -1,6 +1,6 @@
-import { CardContent, Typography } from "@mui/material";
-import { StyledCard, PositionBadge } from "@/components";
+import { PositionBadge, StyledCard } from "@/components";
 import getGradientForGenre from "@/utils/gradient.helper";
+import { CardContent, Typography } from "@mui/material";
 
 interface GenreCardProps {
   genre: {

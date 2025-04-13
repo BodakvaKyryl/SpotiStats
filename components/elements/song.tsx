@@ -1,11 +1,12 @@
 "use client";
-import { useState } from "react";
-import { ListItem, ListItemAvatar, ListItemText, Avatar, Typography } from "@mui/material";
-import { formatDuration } from "@/utils/format";
-import { SongItemProps } from "@/types";
+
 import { PopularityDots } from "@/components";
-import { SongModal } from "./modals/song-modal";
 import { useSpotifyEmbed } from "@/hooks/useSpotifyEmbed";
+import { SongItemProps } from "@/types";
+import { formatDuration } from "@/utils/format";
+import { Avatar, ListItem, ListItemAvatar, ListItemText, Typography } from "@mui/material";
+import { useState } from "react";
+import { SongModal } from "./modals/song-modal";
 
 export const SongItem = ({ song }: SongItemProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);

@@ -22,7 +22,7 @@ export const ErrorContainer = ({ message, severity = "error" }: ErrorContainerPr
 
 export const ProcessImage = ({ text, className }: ProcessImageProps) => {
   return (
-    <div className={`container mx-auto flex justify-center mt-10 ${className || ""}`}>
+    <div className={`container mx-auto mt-10 flex justify-center ${className || ""}`}>
       {text && <span className="mr-4 text-gray-500">{text}</span>}
       <CircularProgress />
     </div>

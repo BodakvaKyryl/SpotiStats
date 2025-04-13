@@ -1,8 +1,8 @@
 "use client";
 
-import useSWR, { SWRConfiguration } from "swr";
 import { useSession } from "next-auth/react";
 import { useMemo } from "react";
+import useSWR, { SWRConfiguration } from "swr";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const useAuthSWR = <T extends (...args: any[]) => unknown, ParamT = Parameters<T>[1]>(

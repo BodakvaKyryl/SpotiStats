@@ -1,11 +1,11 @@
 "use client";
 
+import { ErrorContainer, GenreCard, ProcessImage, TimeRangeSelector } from "@/components";
+import { useAuthSWR } from "@/hooks/useSpotifyData";
+import { SpotifyService } from "@/services";
+import { Limit, SpotifyArtist, TimeRange } from "@/types";
 import { SelectChangeEvent } from "@mui/material";
 import { useState } from "react";
-import { Limit, SpotifyArtist, TimeRange } from "@/types";
-import { ProcessImage, ErrorContainer, TimeRangeSelector, GenreCard } from "@/components";
-import { SpotifyService } from "@/services";
-import { useAuthSWR } from "@/hooks/useSpotifyData";
 
 export default function Genres() {
   const [timeRange, setTimeRange] = useState<TimeRange>("short_term");

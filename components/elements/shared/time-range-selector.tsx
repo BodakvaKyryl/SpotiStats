@@ -1,5 +1,5 @@
-import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material";
 import { Limit, TimeRange } from "@/types";
+import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material";
 
 interface TimeRangeSelectorProps {
   timeRange: TimeRange;

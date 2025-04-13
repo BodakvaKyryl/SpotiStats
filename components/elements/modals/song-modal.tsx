@@ -1,10 +1,10 @@
-import { Modal, Box, Typography, IconButton, Chip, Divider, Fade } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import ExplicitIcon from "@mui/icons-material/Explicit";
-import { SpotifySong } from "@/types";
-import { formatDuration, formatDate } from "@/utils/format";
 import { PopularityDots, SpotifyLinkButton } from "@/components";
 import { Embedded } from "@/components/embedded";
+import { SpotifySong } from "@/types";
+import { formatDate, formatDuration } from "@/utils/format";
+import CloseIcon from "@mui/icons-material/Close";
+import ExplicitIcon from "@mui/icons-material/Explicit";
+import { Box, Chip, Divider, Fade, IconButton, Modal, Typography } from "@mui/material";
 
 interface SongModalProps {
   song: SpotifySong;

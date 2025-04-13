@@ -1,11 +1,11 @@
 "use client";
 
+import { ArtistCard, ErrorContainer, ProcessImage, TimeRangeSelector } from "@/components";
+import { useAuthSWR } from "@/hooks/useSpotifyData";
+import { SpotifyService } from "@/services";
+import { Limit, TimeRange } from "@/types";
 import { SelectChangeEvent } from "@mui/material";
 import { useState } from "react";
-import { Limit, TimeRange } from "@/types";
-import { ArtistCard, ErrorContainer, ProcessImage, TimeRangeSelector } from "@/components";
-import { SpotifyService } from "@/services";
-import { useAuthSWR } from "@/hooks/useSpotifyData";
 
 export default function Artists() {
   const [timeRange, setTimeRange] = useState<TimeRange>("short_term");

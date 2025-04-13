@@ -1,10 +1,11 @@
 "use client";
-import { useState } from "react";
+
+import { PopularityDots } from "@/components";
 import { ArtistItemProps } from "@/types";
 import { CardContent, Typography } from "@mui/material";
-import { StyledCard, PositionBadge, ImageContainer, MediaImage } from "./shared/media-card";
-import { PopularityDots } from "@/components";
+import { useState } from "react";
 import { ArtistModal } from "./modals/artist-modal";
+import { ImageContainer, MediaImage, PositionBadge, StyledCard } from "./shared/media-card";
 
 export const ArtistCard = ({ artist, position, showGenres = true }: ArtistItemProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
