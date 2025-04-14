@@ -2,12 +2,20 @@
 
 import { Box, Button, Container, Paper, Typography } from "@mui/material";
 import { signIn, useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const SpotifyLoginPage = () => {
   const { data: session, status } = useSession();
+  const router = useRouter();
   const isLoading = status === "loading";
   const isAuthenticated = status === "authenticated";
+
+  useEffect(() => {
+    if (isAuthenticated && session?.accessToken) {
+      router.push("/home");
+    }
+  }, [isAuthenticated, session, router]);
 
   return (
     <Container maxWidth="sm">
@@ -38,7 +46,7 @@ const SpotifyLoginPage = () => {
               <Typography variant="body1" sx={{ mb: 2 }}>
                 You are now logged in!
               </Typography>
-              <Button variant="contained" onClick={() => redirect("/home")} sx={{ mt: 2 }}>
+              <Button variant="contained" onClick={() => router.push("/home")} sx={{ mt: 2 }}>
                 Go to Home
               </Button>
             </>

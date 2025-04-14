@@ -1,6 +1,6 @@
 "use client";
 
-import { AlbumItem, ErrorContainer, TimeRangeSelector } from "@/components";
+import { AlbumItem, ErrorContainer, ProtectedLayout, TimeRangeSelector } from "@/components";
 import { useAuthSWR } from "@/hooks/useSpotifyData";
 import { SpotifyService } from "@/services";
 import { Limit, SpotifyAlbum, TimeRange } from "@/types";
@@ -46,26 +46,28 @@ export default function Albums() {
   if (error) return <ErrorContainer message="Failed to load your top albums. Please try again later." />;
 
   return (
-    <div className="container mx-auto max-w-7xl px-4 py-16">
-      <div className="flex flex-col space-y-16">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-semibold">Top Albums</h1>
-          <TimeRangeSelector
-            timeRange={timeRange}
-            limit={limit}
-            onTimeRangeChange={handleTimeRangeChange}
-            onLimitChange={handleLimitChange}
-          />
-        </div>
+    <ProtectedLayout>
+      <div className="container mx-auto max-w-7xl px-4 py-16">
+        <div className="flex flex-col space-y-16">
+          <div className="flex items-center justify-between">
+            <h1 className="text-3xl font-semibold">Top Albums</h1>
+            <TimeRangeSelector
+              timeRange={timeRange}
+              limit={limit}
+              onTimeRangeChange={handleTimeRangeChange}
+              onLimitChange={handleLimitChange}
+            />
+          </div>
 
-        <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
-          {isLoading
-            ? renderSkeletonItems()
-            : data?.items?.map((album: SpotifyAlbum, index: number) => (
-                <AlbumItem key={album.id} album={album} position={index + 1} />
-              ))}
+          <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
+            {isLoading
+              ? renderSkeletonItems()
+              : data?.items?.map((album: SpotifyAlbum, index: number) => (
+                  <AlbumItem key={album.id} album={album} position={index + 1} />
+                ))}
+          </div>
         </div>
       </div>
-    </div>
+    </ProtectedLayout>
   );
 }

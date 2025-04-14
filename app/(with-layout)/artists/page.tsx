@@ -1,6 +1,6 @@
 "use client";
 
-import { ArtistCard, ErrorContainer, TimeRangeSelector } from "@/components";
+import { ArtistCard, ErrorContainer, ProtectedLayout, TimeRangeSelector } from "@/components";
 import { useAuthSWR } from "@/hooks/useSpotifyData";
 import { SpotifyService } from "@/services";
 import { Limit, TimeRange } from "@/types";
@@ -49,24 +49,28 @@ export default function Artists() {
   if (error) return <ErrorContainer message="Failed to load your top artists. Please try again later." />;
 
   return (
-    <div className="container mx-auto max-w-7xl px-4 py-16">
-      <div className="flex flex-col space-y-16">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-semibold">Top Artists</h1>
-          <TimeRangeSelector
-            timeRange={timeRange}
-            limit={limit}
-            onTimeRangeChange={handleTimeRangeChange}
-            onLimitChange={handleLimitChange}
-          />
-        </div>
+    <ProtectedLayout>
+      <div className="container mx-auto max-w-7xl px-4 py-16">
+        <div className="flex flex-col space-y-16">
+          <div className="flex items-center justify-between">
+            <h1 className="text-3xl font-semibold">Top Artists</h1>
+            <TimeRangeSelector
+              timeRange={timeRange}
+              limit={limit}
+              onTimeRangeChange={handleTimeRangeChange}
+              onLimitChange={handleLimitChange}
+            />
+          </div>
 
-        <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
-          {isLoading
-            ? renderSkeletonItems()
-            : data?.items?.map((artist, index) => <ArtistCard key={artist.id} artist={artist} position={index + 1} />)}
+          <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
+            {isLoading
+              ? renderSkeletonItems()
+              : data?.items?.map((artist, index) => (
+                  <ArtistCard key={artist.id} artist={artist} position={index + 1} />
+                ))}
+          </div>
         </div>
       </div>
-    </div>
+    </ProtectedLayout>
   );
 }

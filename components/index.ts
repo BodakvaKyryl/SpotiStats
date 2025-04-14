@@ -1,5 +1,6 @@
 export * from "./layouts/currently-playing";
 export * from "./layouts/navigation-bar";
+export * from "./layouts/protectedLayout";
 export * from "./layouts/recently-played";
 export * from "./layouts/top-albums";
 export * from "./layouts/top-artists";

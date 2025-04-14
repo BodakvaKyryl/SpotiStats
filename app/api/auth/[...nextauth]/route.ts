@@ -1,7 +1,7 @@
+import { environment } from "@/environment";
 import NextAuth from "next-auth";
 import "next-auth/jwt";
 import SpotifyProvider from "next-auth/providers/spotify";
-import { environment } from "@/environment";
 
 declare module "next-auth" {
   interface Session {
