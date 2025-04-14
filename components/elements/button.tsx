@@ -1,5 +1,9 @@
-import { Button, ButtonProps } from "@mui/material";
 import { colors } from "@/styles/colors";
+import { Button, ButtonProps } from "@mui/material";
+
+interface SpotifyLinkButtonProps extends ButtonProps {
+  href: string;
+}
 
 export const SpotifyButton = ({ children, ...props }: ButtonProps) => (
   <Button
@@ -13,6 +17,20 @@ export const SpotifyButton = ({ children, ...props }: ButtonProps) => (
       },
       ...props.sx,
     }}>
+    {children}
+  </Button>
+);
+
+export const SpotifyLinkButton = ({ children, href, ...props }: SpotifyLinkButtonProps) => (
+  <Button
+    component="a"
+    variant="contained"
+    color="primary"
+    size="small"
+    href={href}
+    target="_blank"
+    rel="noopener noreferrer"
+    {...props}>
     {children}
   </Button>
 );

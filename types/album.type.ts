@@ -1,3 +1,4 @@
+import { SpotifyArtist } from "./artist.type";
 import { SpotifyImage } from "./image.type";
 
 export interface SpotifyAlbum {
@@ -5,7 +6,13 @@ export interface SpotifyAlbum {
   name: string;
   uri?: string;
   images: SpotifyImage[];
-  artists: Array<{ name: string }>;
+  popularity?: number;
+  total_tracks: number;
+  release_date: string;
+  artists: Pick<SpotifyArtist, "id" | "name">[];
+  external_urls: {
+    spotify: string;
+  };
 }
 
 export interface AlbumItemProps {

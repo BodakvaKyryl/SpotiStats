@@ -1,20 +1,41 @@
 import { Box } from "@mui/material";
+import { ReactNode } from "react";
 
 interface HorizontalScrollProps {
-  children: React.ReactNode;
-  className?: string;
+  children: ReactNode;
 }
 
-export const HorizontalScroll = ({ children, className }: HorizontalScrollProps) => (
-  <Box
-    className={`scrollbar-hide overflow-x-auto ${className || ""}`}
-    sx={{
-      "&::-webkit-scrollbar": {
-        display: "none",
-      },
-      "-ms-overflow-style": "none",
-      "scrollbar-width": "none",
-    }}>
-    <div className="flex space-x-4 pb-4">{children}</div>
-  </Box>
-);
+export const HorizontalScroll = ({ children }: HorizontalScrollProps) => {
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        overflowX: "auto",
+        scrollBehavior: "smooth",
+        "&::-webkit-scrollbar": {
+          height: "8px",
+        },
+        "&::-webkit-scrollbar-track": {
+          background: "transparent",
+        },
+        "&::-webkit-scrollbar-thumb": {
+          background: "#888",
+          borderRadius: "4px",
+          "&:hover": {
+            background: "#555",
+          },
+        },
+
+        msOverflowStyle: "none",
+        scrollbarWidth: "none",
+        "&:hover": {
+          "&::-webkit-scrollbar": {
+            display: "block",
+          },
+          scrollbarWidth: "thin",
+        },
+      }}>
+      {children}
+    </Box>
+  );
+};

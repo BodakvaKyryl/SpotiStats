@@ -1,16 +1,20 @@
 "use client";
 
-import { Box, Paper, SelectChangeEvent } from "@mui/material";
+import { ErrorContainer, ProtectedLayout, SongItem, TimeRangeSelector } from "@/components";
+import { useAuthSWR } from "@/hooks/useSpotifyData";
+import { SpotifyService } from "@/services/spotify-service";
+import { Limit, TimeRange } from "@/types";
+import { Box, ListItem, ListItemAvatar, ListItemText, Paper, SelectChangeEvent, Skeleton } from "@mui/material";
 import { useState } from "react";
-import { Limit, SpotifySong, TimeRange } from "@/types";
-import { useTopSongs } from "@/hooks/useSpotifyData";
-import { ProcessImage, ErrorContainer, TimeRangeSelector, SongItem } from "@/components";
 
 export default function Songs() {
   const [timeRange, setTimeRange] = useState<TimeRange>("short_term");
   const [limit, setLimit] = useState<Limit>("20");
 
-  const { data, error, isLoading } = useTopSongs(timeRange, limit);
+  const { data, error, isLoading } = useAuthSWR<typeof SpotifyService.getTopUserSongs>(SpotifyService.getTopUserSongs, {
+    timeRange,
+    limit,
+  });
 
   const handleTimeRangeChange = (event: SelectChangeEvent) => {
     setTimeRange(event.target.value as TimeRange);
@@ -20,37 +24,76 @@ export default function Songs() {
     setLimit(event.target.value as Limit);
   };
 
-  if (isLoading) return <ProcessImage />;
+  const renderSkeletonItems = () => {
+    return Array(20)
+      .fill(null)
+      .map((_, index) => (
+        <Box
+          key={`skeleton-${index}`}
+          sx={{
+            "&:not(:last-child)": {
+              borderBottom: 1,
+              borderColor: "divider",
+            },
+          }}>
+          <ListItem className="flex items-center space-x-4 p-4 pt-2 pb-2">
+            {/*  */}
+            <ListItemAvatar>
+              <Skeleton variant="rectangular" width={56} height={56} className="rounded-md pt-2 pb-2" />
+            </ListItemAvatar>
+            <ListItemText
+              primary={
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Skeleton variant="text" width={180} height={24} />
+                  </div>
+                  <div className="flex flex-col items-end gap-1">
+                    <Skeleton variant="text" width={40} height={20} />
+                    <Skeleton variant="text" width={80} height={16} />
+                  </div>
+                </div>
+              }
+              secondary={<Skeleton variant="text" width={140} height={23} />}
+            />
+          </ListItem>
+        </Box>
+      ));
+  };
+
   if (error) return <ErrorContainer message="Failed to load your top songs. Please try again later." />;
 
   return (
-    <div className="container mx-auto max-w-3xl px-4 py-16">
-      <div className="flex flex-col space-y-16">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-semibold">Top Songs</h1>
-          <TimeRangeSelector
-            timeRange={timeRange}
-            limit={limit}
-            onTimeRangeChange={handleTimeRangeChange}
-            onLimitChange={handleLimitChange}
-          />
-        </div>
+    <ProtectedLayout>
+      <div className="container mx-auto max-w-5xl px-4 py-16">
+        <div className="flex flex-col space-y-16">
+          <div className="flex items-center justify-between">
+            <h1 className="text-3xl font-semibold">Top Songs</h1>
+            <TimeRangeSelector
+              timeRange={timeRange}
+              limit={limit}
+              onTimeRangeChange={handleTimeRangeChange}
+              onLimitChange={handleLimitChange}
+            />
+          </div>
 
-        <Paper elevation={0} variant="outlined" className="bg-background overflow-hidden rounded-md">
-          {data?.items?.map((song: SpotifySong, index: number) => (
-            <Box
-              key={song.id}
-              sx={{
-                "&:not(:last-child)": {
-                  borderBottom: 1,
-                  borderColor: "divider",
-                },
-              }}>
-              <SongItem song={song} position={index + 1} />
-            </Box>
-          ))}
-        </Paper>
+          <Paper elevation={0} variant="outlined" className="bg-background overflow-hidden rounded-md">
+            {isLoading
+              ? renderSkeletonItems()
+              : data?.items?.map((song, index) => (
+                  <Box
+                    key={song.id}
+                    sx={{
+                      "&:not(:last-child)": {
+                        borderBottom: 1,
+                        borderColor: "divider",
+                      },
+                    }}>
+                    <SongItem song={song} position={index + 1} />
+                  </Box>
+                ))}
+          </Paper>
+        </div>
       </div>
-    </div>
+    </ProtectedLayout>
   );
 }

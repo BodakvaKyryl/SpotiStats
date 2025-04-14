@@ -7,6 +7,9 @@ export interface SpotifyArtist {
   genres: string[];
   images: SpotifyImage[];
   popularity?: number;
+  external_urls: {
+    spotify: string;
+  };
 }
 
 export interface ArtistItemProps {

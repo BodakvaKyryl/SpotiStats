@@ -1,7 +1,7 @@
+import { environment } from "@/environment";
 import NextAuth from "next-auth";
 import "next-auth/jwt";
 import SpotifyProvider from "next-auth/providers/spotify";
-import { environment } from "@/environment";
 
 declare module "next-auth" {
   interface Session {
@@ -10,14 +10,14 @@ declare module "next-auth" {
   }
 }
 
-declare module "next-auth/jwt" {
-  interface JWT {
-    accessToken?: string;
-    refreshToken?: string;
-    accessTokenExpires?: number;
-    error?: string;
-  }
-}
+// declare module "next-auth/jwt" {
+//   interface JWT {
+//     accessToken?: string;
+//     refreshToken?: string;
+//     accessTokenExpires?: number;
+//     error?: string;
+//   }
+// }
 
 const handler = NextAuth({
   providers: [

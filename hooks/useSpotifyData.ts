@@ -1,97 +1,28 @@
 "use client";
 
-import useSWR from "swr";
-import useSWRImmutable from "swr/immutable";
 import { useSession } from "next-auth/react";
-import { TimeRange, Limit, SpotifyAlbum, SpotifySong, RecentlyPlayedResponse } from "@/types";
-import { spotifyFetcher } from "@/utils/fetcher";
+import { useMemo } from "react";
+import useSWR, { SWRConfiguration } from "swr";
 
-export function useTopSongs(timeRange: TimeRange, limit: Limit) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const useAuthSWR = <T extends (...args: any[]) => unknown, ParamT = Parameters<T>[1]>(
+  fetcher: T | null,
+  params: ParamT | null,
+  options?: SWRConfiguration
+) => {
   const { data: session } = useSession();
 
-  return useSWRImmutable(
-    session?.accessToken
-      ? `https://api.spotify.com/v1/me/top/tracks?${new URLSearchParams({
-          limit,
-          time_range: timeRange,
-        })}`
-      : null,
-    spotifyFetcher(session)
-  );
-}
+  const key = useMemo(() => {
+    if (!session?.accessToken || !fetcher || !params) return null;
+    return [fetcher.name, session.accessToken, params];
+  }, [session?.accessToken, fetcher, params]);
 
-export function useTopAlbums(timeRange: TimeRange, limit: Limit) {
-  const { data: session } = useSession();
-  const {
-    data: tracksData,
-    error,
-    isLoading,
-  } = useSWR<{ items: SpotifySong[] }>(
-    session?.accessToken
-      ? `https://api.spotify.com/v1/me/top/tracks?${new URLSearchParams({
-          limit,
-          time_range: timeRange,
-        })}`
-      : null,
-    spotifyFetcher(session)
-  );
-
-  const albums: SpotifyAlbum[] = tracksData?.items
-    ? Array.from(new Map(tracksData.items.map((track) => [track.album.id, track.album])).values())
-    : [];
-
-  return {
-    data: albums,
-    error,
-    isLoading,
-  };
-}
-
-export function useTopArtists(timeRange: TimeRange, limit: Limit) {
-  const { data: session } = useSession();
-
-  return useSWRImmutable(
-    session?.accessToken
-      ? `https://api.spotify.com/v1/me/top/artists?${new URLSearchParams({
-          limit,
-          time_range: timeRange,
-        })}`
-      : null,
-    spotifyFetcher(session)
-  );
-}
-
-export function useRecentlyPlayed(limit: Limit = "50") {
-  const { data: session } = useSession();
-
-  return useSWRImmutable<RecentlyPlayedResponse>(
-    session?.accessToken
-      ? `https://api.spotify.com/v1/me/player/recently-played?${new URLSearchParams({
-          limit,
-        })}`
-      : null,
-    spotifyFetcher(session)
-  );
-}
-
-export function useNowPlaying() {
-  const { data: session } = useSession();
-
-  const { data, error } = useSWR(
-    session?.accessToken ? "https://api.spotify.com/v1/me/player/currently-playing" : null,
-    spotifyFetcher(session),
+  return useSWR<Awaited<ReturnType<T>>>(
+    key,
+    () => (fetcher ? (fetcher(session?.accessToken, params) as Awaited<ReturnType<T>>) : null),
     {
-      refreshInterval: 1000,
-      revalidateOnFocus: true,
-      shouldRetryOnError: false,
-      errorRetryCount: 2,
+      revalidateOnFocus: false,
+      ...options,
     }
   );
-
-  return {
-    data,
-    isLoading: !error && !data,
-    isError: error,
-    isEmpty: error?.status === 404 || !data,
-  };
-}
+};
