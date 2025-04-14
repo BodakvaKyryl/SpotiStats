@@ -46,6 +46,8 @@ const SpotifyLoginPage = () => {
                   <Image
                     src={session.user.image}
                     alt="Profile"
+                    width={64}
+                    height={64}
                     className="h-16 w-16 rounded-full border-2"
                     style={{ borderColor: colors.spotifyGreen }}
                   />
