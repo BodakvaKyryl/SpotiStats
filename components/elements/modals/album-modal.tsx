@@ -11,6 +11,10 @@ interface AlbumModalProps {
   album: SpotifyAlbum;
   open: boolean;
   onClose: () => void;
+  embedded?: {
+    html: string;
+    isLoading: boolean;
+  };
 }
 
 type ArtistsParams = {

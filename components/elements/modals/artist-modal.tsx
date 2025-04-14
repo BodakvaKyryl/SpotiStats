@@ -8,6 +8,10 @@ interface ArtistModalProps {
   artist: SpotifyArtist;
   open: boolean;
   onClose: () => void;
+  embedded?: {
+    html: string;
+    isLoading: boolean;
+  };
 }
 
 export const ArtistModal = ({ artist, open, onClose }: ArtistModalProps) => {

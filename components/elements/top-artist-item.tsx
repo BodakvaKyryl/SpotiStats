@@ -1,6 +1,7 @@
 "use client";
 
 import { PopularityDots } from "@/components";
+import { useSpotifyEmbed } from "@/hooks/useSpotifyEmbed";
 import { ArtistItemProps } from "@/types";
 import { Avatar, Box, Typography } from "@mui/material";
 import { useState } from "react";
@@ -12,6 +13,8 @@ export const TopArtistItem = ({ artist }: ArtistItemProps) => {
   const handleClick = () => {
     setIsModalOpen(true);
   };
+
+  const { embedHtml, isLoading: isEmbedHtmlLoading } = useSpotifyEmbed(artist.external_urls.spotify, isModalOpen);
 
   return (
     <>
@@ -42,7 +45,15 @@ export const TopArtistItem = ({ artist }: ArtistItemProps) => {
         </div>
       </Box>
 
-      <ArtistModal artist={artist} open={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <ArtistModal
+        artist={artist}
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        embedded={{
+          html: embedHtml,
+          isLoading: isEmbedHtmlLoading,
+        }}
+      />
     </>
   );
 };

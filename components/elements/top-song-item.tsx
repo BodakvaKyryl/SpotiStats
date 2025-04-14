@@ -1,6 +1,7 @@
 "use client";
 
 import { PopularityDots, SongModal } from "@/components";
+import { useSpotifyEmbed } from "@/hooks/useSpotifyEmbed";
 import { SongItemProps } from "@/types";
 import { Avatar, Box, Typography } from "@mui/material";
 import { useState } from "react";
@@ -12,10 +13,12 @@ export const TopSongItem = ({ song }: SongItemProps) => {
     setIsModalOpen(true);
   };
 
+  const { embedHtml, isLoading: isEmbedHtmlLoading } = useSpotifyEmbed(song.external_urls.spotify, isModalOpen);
+
   return (
     <>
       <Box
-        className="flex flex-col gap-2 p-2 transition-colors hover:bg-gray-50 dark:hover:bg-neutral-900"
+        className="flex cursor-pointer flex-col gap-2 p-2 transition-colors hover:bg-gray-50 dark:hover:bg-neutral-900"
         onClick={handleClick}>
         <Avatar
           alt={song.name}
@@ -39,7 +42,15 @@ export const TopSongItem = ({ song }: SongItemProps) => {
         </div>
       </Box>
 
-      <SongModal song={song} open={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <SongModal
+        song={song}
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        embedded={{
+          html: embedHtml,
+          isLoading: isEmbedHtmlLoading,
+        }}
+      />
     </>
   );
 };

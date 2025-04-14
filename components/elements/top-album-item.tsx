@@ -1,6 +1,7 @@
 "use client";
 
 import { PopularityDots } from "@/components";
+import { useSpotifyEmbed } from "@/hooks/useSpotifyEmbed";
 import { AlbumItemProps } from "@/types";
 import { Avatar, Box, Typography } from "@mui/material";
 import { useState } from "react";
@@ -12,6 +13,8 @@ export const TopAlbumItem = ({ album }: AlbumItemProps) => {
   const handleClick = () => {
     setIsModalOpen(true);
   };
+
+  const { embedHtml, isLoading: isEmbedHtmlLoading } = useSpotifyEmbed(album.external_urls.spotify, isModalOpen);
 
   return (
     <>
@@ -40,7 +43,12 @@ export const TopAlbumItem = ({ album }: AlbumItemProps) => {
         </div>
       </Box>
 
-      <AlbumModal album={album} open={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <AlbumModal
+        album={album}
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        embedded={{ html: embedHtml, isLoading: isEmbedHtmlLoading }}
+      />
     </>
   );
 };
