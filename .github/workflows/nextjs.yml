@@ -78,7 +78,7 @@ jobs:
         env:
           NEXT_PUBLIC_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_CLIENT_ID }}
           NEXT_PUBLIC_CLIENT_SECRET: ${{ secrets.NEXT_PUBLIC_CLIENT_SECRET }}
-          NEXT_PUBLIC_REDIRECT_URI: ${{ secrests.NEXT_PUBLIC_REDIRECT_URI }}
+          NEXT_PUBLIC_REDIRECT_URI: ${{ secrets.NEXT_PUBLIC_REDIRECT_URI }}
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
