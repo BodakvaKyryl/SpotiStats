@@ -41,7 +41,7 @@ const handler = NextAuth({
           accessTokenExpires: Number(account.expires_at) * 1000,
         };
       }
-      if (token.accessTokenExpires && Date.now() < token.accessTokenExpires) {
+      if (token.accessTokenExpires && Date.now() < (token.accessTokenExpires as number)) {
         return token;
       }
       try {

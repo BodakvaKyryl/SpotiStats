@@ -57,11 +57,10 @@ const SpotifyLoginPage = () => {
               <p style={{ color: colors.spotifyGreyLight }}>Your account is connected</p>
               <button
                 onClick={() => router.push("/home")}
-                className="w-full rounded-full py-3 font-bold transition-colors"
+                className="w-full rounded-full py-3 font-bold transition-colors hover:bg-[#1ed760]"
                 style={{
                   backgroundColor: colors.spotifyGreen,
                   color: "white",
-                  ":hover": { backgroundColor: colors.spotifyGreenHover },
                 }}
                 onMouseOver={(e) => (e.currentTarget.style.backgroundColor = colors.spotifyGreenHover)}
                 onMouseOut={(e) => (e.currentTarget.style.backgroundColor = colors.spotifyGreen)}>
