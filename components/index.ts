@@ -1,4 +1,5 @@
 export * from "./layouts/currently-playing";
+export * from "./layouts/footer";
 export * from "./layouts/navigation-bar";
 export * from "./layouts/protectedLayout";
 export * from "./layouts/recently-played";
