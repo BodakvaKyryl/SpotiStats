@@ -4,7 +4,7 @@ import { ErrorContainer, HorizontalScroll, SpotifyButton, TopAlbumItem } from "@
 import { useAuthSWR } from "@/hooks/useSpotifyData";
 import { SpotifyService } from "@/services/spotify-service";
 import { SpotifyAlbum } from "@/types";
-import { Box, Skeleton } from "@mui/material";
+import { Box, Skeleton, Paper } from "@mui/material";
 import Link from "next/link";
 
 export const TopAlbums = () => {
@@ -24,24 +24,27 @@ export const TopAlbums = () => {
           key={`skeleton-${index}`}
           sx={{
             minWidth: {
-              xs: "140px",
-              sm: "160px",
-              md: "180px",
+              xs: "160px",
+              sm: "180px",
+              md: "200px",
             },
             maxWidth: {
-              xs: "140px",
-              sm: "160px",
-              md: "180px",
+              xs: "160px",
+              sm: "180px",
+              md: "200px",
             },
             px: 1,
           }}>
-          <div className="flex flex-col gap-2 p-2">
-            <Skeleton variant="rectangular" width="100%" height={0} sx={{ paddingTop: "100%", borderRadius: 2 }} />
-            <div className="flex flex-col">
+          <Paper elevation={0} variant="outlined" className="h-full">
+            <div className="flex aspect-square items-center justify-center overflow-hidden rounded-t-md bg-neutral-100 dark:bg-neutral-800">
+              <Skeleton variant="rectangular" width="100%" height="100%" />
+            </div>
+            <div className="flex flex-col items-center gap-2 p-4">
               <Skeleton variant="text" width="80%" height={24} />
               <Skeleton variant="text" width="60%" height={20} />
+              <Skeleton variant="text" width="40%" height={16} />
             </div>
-          </div>
+          </Paper>
         </Box>
       ));
   };
@@ -81,14 +84,14 @@ export const TopAlbums = () => {
               key={album.id}
               sx={{
                 minWidth: {
-                  xs: "140px",
-                  sm: "160px",
-                  md: "180px",
+                  xs: "160px",
+                  sm: "180px",
+                  md: "200px",
                 },
                 maxWidth: {
-                  xs: "140px",
-                  sm: "160px",
-                  md: "180px",
+                  xs: "160px",
+                  sm: "180px",
+                  md: "200px",
                 },
                 px: 1,
               }}>

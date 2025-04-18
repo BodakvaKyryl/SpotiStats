@@ -21,14 +21,14 @@ export const TopSongs = () => {
           key={`skeleton-${index}`}
           sx={{
             minWidth: {
-              xs: "140px",
-              sm: "160px",
-              md: "180px",
+              xs: "160px",
+              sm: "180px",
+              md: "200px",
             },
             maxWidth: {
-              xs: "140px",
-              sm: "160px",
-              md: "180px",
+              xs: "160px",
+              sm: "180px",
+              md: "200px",
             },
             px: 1,
           }}>
@@ -79,14 +79,14 @@ export const TopSongs = () => {
               key={song.id}
               sx={{
                 minWidth: {
-                  xs: "140px",
-                  sm: "160px",
-                  md: "180px",
+                  xs: "160px",
+                  sm: "180px",
+                  md: "200px",
                 },
                 maxWidth: {
-                  xs: "140px",
-                  sm: "160px",
-                  md: "180px",
+                  xs: "160px",
+                  sm: "180px",
+                  md: "200px",
                 },
                 px: 1,
               }}>
