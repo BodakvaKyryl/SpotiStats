@@ -3,11 +3,10 @@
 import { useSpotifyEmbed } from "@/hooks/useSpotifyEmbed";
 import type { RecentlyPlayedTrack } from "@/types/recently-played.type";
 import { formatDuration } from "@/utils/format";
-import { formatTimeDistanceMobile } from "@/utils/formatTimeDistance";
 import { Avatar, Box, ListItem, ListItemAvatar, Skeleton, Typography, useMediaQuery, useTheme } from "@mui/material";
-import { formatDistanceToNow } from "date-fns";
 import { useState } from "react";
 import { SongModal } from "./modals/song-modal";
+import { CompactTimeDisplay } from "./shared/time-display";
 
 interface RecentlyPlayedItemProps {
   track?: RecentlyPlayedTrack;
@@ -88,27 +87,27 @@ export const RecentlyPlayedItem = ({ track, isLoading = false }: RecentlyPlayedI
             sx={{
               flexGrow: 1,
               minWidth: 0,
-              maxWidth: isMobile ? "calc(100% - 60px)" : "calc(100% - 180px)",
+              maxWidth: isMobile ? "calc(100% - 55px)" : "calc(100% - 160px)",
             }}>
             <Typography
-              variant={isMobile ? "body1" : "subtitle1"}
+              variant={isMobile ? "body2" : "subtitle1"}
               sx={{
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 whiteSpace: "nowrap",
                 fontWeight: 500,
               }}>
-              {truncateText(track.track.name, isMobile ? 23 : 40)}
+              {truncateText(track.track.name, isMobile ? 31 : 40)}
             </Typography>
             <Typography
-              variant="body2"
+              variant={isMobile ? "caption" : "body2"}
               color="text.secondary"
               sx={{
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 whiteSpace: "nowrap",
               }}>
-              {truncateText(artistNames, isMobile ? 20 : 35)}
+              {truncateText(artistNames, isMobile ? 31 : 35)}
             </Typography>
           </Box>
           <Typography
@@ -121,20 +120,16 @@ export const RecentlyPlayedItem = ({ track, isLoading = false }: RecentlyPlayedI
               textAlign: "right",
             }}>
             {formatDuration(track.track.duration_ms)}
-          </Typography>
-          <Typography
-            variant="caption"
-            color="text.secondary"
+          </Typography>{" "}
+          <Box
             sx={{
               flexShrink: 0,
-              width: isMobile ? "50px" : "90px",
-              textAlign: "right",
+              display: "flex",
+              justifyContent: { xs: "flex-end", md: "flex-start" },
+              minWidth: { xs: "45px", md: "auto" },
             }}>
-            {" "}
-            {isMobile
-              ? formatTimeDistanceMobile(new Date(track.played_at))
-              : formatDistanceToNow(new Date(track.played_at), { addSuffix: true })}
-          </Typography>
+            <CompactTimeDisplay date={new Date(track.played_at)} />
+          </Box>
         </Box>
       </ListItem>
 
