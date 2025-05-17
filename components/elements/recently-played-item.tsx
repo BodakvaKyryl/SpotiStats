@@ -125,7 +125,7 @@ export const RecentlyPlayedItem = ({ track, isLoading = false }: RecentlyPlayedI
             color="text.secondary"
             sx={{
               flexShrink: 0,
-              minWidth: isMobile ? "70px" : "90px",
+              minWidth: isMobile ? "40px" : "90px",
               textAlign: "right",
             }}>
             {" "}
