@@ -55,9 +55,9 @@ export const RecentlyPlayedItem = ({ track, isLoading = false }: RecentlyPlayedI
   }
 
   const artistNames = track.track.artists.map((artist) => artist.name).join(", ");
-
   const truncateText = (text: string, maxLength: number) => {
-    return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
+    const effectiveMaxLength = Math.floor(maxLength * 0.85);
+    return text.length > effectiveMaxLength ? `${text.substring(0, effectiveMaxLength)}...` : text;
   };
 
   return (
@@ -88,7 +88,7 @@ export const RecentlyPlayedItem = ({ track, isLoading = false }: RecentlyPlayedI
             sx={{
               flexGrow: 1,
               minWidth: 0,
-              maxWidth: isMobile ? "90%" : "90%",
+              maxWidth: isMobile ? "calc(100% - 60px)" : "calc(100% - 180px)",
             }}>
             <Typography
               variant={isMobile ? "body1" : "subtitle1"}
@@ -98,7 +98,7 @@ export const RecentlyPlayedItem = ({ track, isLoading = false }: RecentlyPlayedI
                 whiteSpace: "nowrap",
                 fontWeight: 500,
               }}>
-              {truncateText(track.track.name, isMobile ? 25 : 40)}
+              {truncateText(track.track.name, isMobile ? 23 : 40)}
             </Typography>
             <Typography
               variant="body2"
@@ -117,6 +117,8 @@ export const RecentlyPlayedItem = ({ track, isLoading = false }: RecentlyPlayedI
             sx={{
               flexShrink: 0,
               display: isMobile ? "none" : "block",
+              width: "70px",
+              textAlign: "right",
             }}>
             {formatDuration(track.track.duration_ms)}
           </Typography>
@@ -125,7 +127,7 @@ export const RecentlyPlayedItem = ({ track, isLoading = false }: RecentlyPlayedI
             color="text.secondary"
             sx={{
               flexShrink: 0,
-              minWidth: isMobile ? "40px" : "90px",
+              width: isMobile ? "50px" : "90px",
               textAlign: "right",
             }}>
             {" "}
