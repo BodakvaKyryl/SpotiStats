@@ -53,7 +53,7 @@ export const HorizontalScroll = ({ children }: HorizontalScrollProps) => {
             onClick={() => scroll("left")}
             sx={{
               position: "absolute",
-              left: { xs: "8px", md: "10px" },
+              left: { xs: "8px", md: "0px" },
               top: "50%",
               transform: "translateY(-50%)",
               zIndex: 2,
@@ -87,7 +87,7 @@ export const HorizontalScroll = ({ children }: HorizontalScrollProps) => {
             onClick={() => scroll("right")}
             sx={{
               position: "absolute",
-              right: { xs: "8px", md: "10px" },
+              right: { xs: "8px", md: "0px" },
               top: "50%",
               transform: "translateY(-50%)",
               zIndex: 2,
