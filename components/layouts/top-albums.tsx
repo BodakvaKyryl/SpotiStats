@@ -4,7 +4,7 @@ import { ErrorContainer, HorizontalScroll, SpotifyButton, TopAlbumItem } from "@
 import { useAuthSWR } from "@/hooks/useSpotifyData";
 import { SpotifyService } from "@/services/spotify-service";
 import { SpotifyAlbum } from "@/types";
-import { Box, Skeleton, Paper } from "@mui/material";
+import { Box, Paper, Skeleton } from "@mui/material";
 import Link from "next/link";
 
 export const TopAlbums = () => {
