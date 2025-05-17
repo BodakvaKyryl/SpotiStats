@@ -3,6 +3,7 @@
 import { useSpotifyEmbed } from "@/hooks/useSpotifyEmbed";
 import type { RecentlyPlayedTrack } from "@/types/recently-played.type";
 import { formatDuration } from "@/utils/format";
+import { formatTimeDistanceMobile } from "@/utils/formatTimeDistance";
 import { Avatar, Box, ListItem, ListItemAvatar, Skeleton, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { formatDistanceToNow } from "date-fns";
 import { useState } from "react";
@@ -127,7 +128,10 @@ export const RecentlyPlayedItem = ({ track, isLoading = false }: RecentlyPlayedI
               minWidth: isMobile ? "70px" : "90px",
               textAlign: "right",
             }}>
-            {formatDistanceToNow(new Date(track.played_at), { addSuffix: true })}
+            {" "}
+            {isMobile
+              ? formatTimeDistanceMobile(new Date(track.played_at))
+              : formatDistanceToNow(new Date(track.played_at), { addSuffix: true })}
           </Typography>
         </Box>
       </ListItem>

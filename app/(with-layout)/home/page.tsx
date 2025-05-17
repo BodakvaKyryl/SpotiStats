@@ -5,7 +5,7 @@ import { CurrentlyPlaying, ProtectedLayout, RecentlyPlayed, TopAlbums, TopArtist
 export default function Home() {
   return (
     <ProtectedLayout>
-      <div className="container mx-auto max-w-5xl px-4 py-16">
+      <div className="container mx-auto max-w-7xl sm:px-1.25 md:px-4">
         <div className="flex flex-col space-y-8">
           <TopSongs />
           <TopAlbums />
