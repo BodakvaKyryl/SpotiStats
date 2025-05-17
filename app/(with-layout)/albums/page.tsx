@@ -47,9 +47,9 @@ export default function Albums() {
 
   return (
     <ProtectedLayout>
-      <div className="container mx-auto max-w-7xl px-4 py-16">
-        <div className="flex flex-col space-y-16">
-          <div className="flex items-center justify-between">
+      <div className="container mx-auto max-w-7xl sm:px-1.25 md:px-4">
+        <div className="flex flex-col space-y-6">
+          <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
             <h1 className="text-3xl font-semibold">Top Albums</h1>
             <TimeRangeSelector
               timeRange={timeRange}
@@ -59,7 +59,7 @@ export default function Albums() {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
+          <div className="grid-col-1 grid gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
             {isLoading
               ? renderSkeletonItems()
               : data?.items?.map((album: SpotifyAlbum, index: number) => (

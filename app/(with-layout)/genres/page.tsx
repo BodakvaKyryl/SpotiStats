@@ -40,9 +40,9 @@ export default function Genres() {
 
   return (
     <ProtectedLayout>
-      <div className="container mx-auto max-w-7xl px-4 py-16">
-        <div className="flex flex-col space-y-16">
-          <div className="flex items-center justify-between">
+      <div className="container mx-auto max-w-7xl sm:px-1.25 md:px-4">
+        <div className="flex flex-col space-y-6">
+          <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
             <h1 className="text-3xl font-semibold">Top Genres</h1>
             <TimeRangeSelector
               timeRange={timeRange}

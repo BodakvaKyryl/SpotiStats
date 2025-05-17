@@ -60,7 +60,6 @@ const UserStack = styled(Stack)(({ theme }) => ({
   background: alpha(theme.palette.background.paper, 0),
   borderRadius: theme.shape.borderRadius,
   padding: theme.spacing(1, 2),
-  backdropFilter: "blur(5px)",
 }));
 
 const MobileDrawer = styled(Drawer)(({ theme }) => ({
@@ -193,7 +192,7 @@ export const Navbar = () => {
           {isLoading ? (
             <CircularProgress size={24} sx={{ color: colors.spotifyGreen }} />
           ) : isAuthenticated && session?.user ? (
-            <UserStack direction="row" spacing={2} alignItems="center">
+            <UserStack direction="row" spacing={2} alignItems="center" sx={{ p: 0 }}>
               <Avatar
                 src={session.user.image || undefined}
                 alt={session.user.name || "User"}
