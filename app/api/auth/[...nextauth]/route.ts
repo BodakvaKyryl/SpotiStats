@@ -20,6 +20,7 @@ declare module "next-auth" {
 // }
 
 const handler = NextAuth({
+  secret: environment.nextAuthSecret,
   providers: [
     SpotifyProvider({
       clientId: environment.clientId,

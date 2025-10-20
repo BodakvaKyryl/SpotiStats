@@ -1,6 +1,7 @@
 export const environment = {
   clientId: process.env.NEXT_PUBLIC_CLIENT_ID || "",
   clientSecret: process.env.NEXT_PUBLIC_CLIENT_SECRET || "",
+  nextAuthSecret: process.env.NEXTAUTH_SECRET || "",
   redirectUri: process.env.NEXT_PUBLIC_REDIRECT_URI || "",
 
   redirectUrl: process.env.NEXT_PUBLIC_REDIRECT_URL || "http://localhost:3000/home",
