@@ -14,7 +14,7 @@ export const useAuthSWR = <T extends (...args: any[]) => unknown, ParamT = Param
 
   const key = useMemo(() => {
     if (!session?.accessToken || !fetcher || !params) return null;
-    return [fetcher.name, session.accessToken, params];
+    return [fetcher.name, session.accessToken, JSON.stringify(params)];
   }, [session?.accessToken, fetcher, params]);
 
   return useSWR<Awaited<ReturnType<T>>>(
